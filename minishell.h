@@ -1,5 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
+/*   Updated: 2025/12/07 15:58:03 by sreffers         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 #define MINISHELL_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 typedef struct s_list
 {
@@ -45,7 +62,7 @@ typedef struct s_token
 	char			*value;
 	struct s_token	*prev;
 	struct s_token	*next;
-};
+}	t_token;
 
 
 #endif
