@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/07 15:58:03 by sreffers         ###   ########.fr       */
+/*   Updated: 2025/12/08 16:52:25 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,14 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "../libft/libft.h"
 
-typedef struct s_list
+typedef struct s_minishell
 {
-	void			*content;
-	struct s_list	*next;
-}	t_list;
+	t_list  *env;
+	int		exit_code;
+	t_token	*token;
+}	t_minishell;
 
 typedef enum	e_token_type
 {
@@ -38,6 +40,12 @@ typedef enum	e_token_type
 	TOKEN_R_PARENT,
 	TOKEN_EOF
 }	t_token_type;
+typedef struct s_redirection
+{
+	t_token_type	type;   // TOKEN_INPUT, TRUNC, APPEND ou HEREDOC
+	char			*path;  // Le nom du fichier (ou le délimiteur heredoc)
+	// char         **expanded_args; // (Pour plus tard: si le nom du fichier est une var $FILE)
+}	t_redirection;
 
 typedef enum	e_node_type
 {
@@ -64,5 +72,9 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
+void	clean_exit(t_minishell *shell, int exit_code);
+void	token_add_back(t_token **lst, t_token *new);
+t_token	*new_token(char	*value, t_token_type type);
+t_token	*handle_separator(char *input, int *i);
 
 #endif

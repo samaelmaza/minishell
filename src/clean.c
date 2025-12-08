@@ -1,29 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   clean.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/07 15:42:16 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/07 17:08:59 by sreffers         ###   ########.fr       */
+/*   Created: 2025/12/08 15:56:47 by sreffers          #+#    #+#             */
+/*   Updated: 2025/12/08 15:59:24 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
-int main(int ac, char **av)
+void	free_content(void	*content)
 {
-	char	*input;
+	if(content)
+		free(content);
+}
 
-	while(1)
-	{
-		if(!input)
-			break;
-		input = readline("$> ");
-		// parse_inpue(input);
-		printf("%s", input);
-	}
-
-	free(input);
+void	clean_exit(t_minishell *shell, int exit_code)
+{
+	if(shell->env)
+		ft_lstclear(&shell->env, free_content);
+	exit(exit_code);
 }
