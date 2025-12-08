@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/08 16:52:25 by sreffers         ###   ########.fr       */
+/*   Updated: 2025/12/08 21:00:14 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "../libft/libft.h"
+
+typedef struct s_token t_token;
 
 typedef struct s_minishell
 {
@@ -76,5 +78,6 @@ void	clean_exit(t_minishell *shell, int exit_code);
 void	token_add_back(t_token **lst, t_token *new);
 t_token	*new_token(char	*value, t_token_type type);
 t_token	*handle_separator(char *input, int *i);
+int		lexer(t_minishell *shell, char *input);
 
 #endif

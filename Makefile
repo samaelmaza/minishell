@@ -1,7 +1,7 @@
 NAME        = minishell
 CC          = cc
 # 1. On retire -lreadline d'ici
-CFLAGS      = -Wall -Wextra -Werror -g
+CFLAGS      = -Wall -Wextra -Werror -g -g3 -fsanitize=address
 
 SRC_DIR     = src
 OBJ_DIR     = obj
@@ -25,7 +25,7 @@ CYAN        = \033[0;36m
 WHITE       = \033[0;37m
 RESET       = \033[0m
 
-SRCS        = $(SRC_DIR)/main.c $(SRC_DIR)/clean.c
+SRCS        = $(SRC_DIR)/main.c $(SRC_DIR)/clean.c $(SRC_DIR)/lexer.c $(SRC_DIR)/lexer_separator.c $(SRC_DIR)/token_utils.c
 OBJS        = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 HEADERS     = $(INC_DIR)/minishell.h
 
