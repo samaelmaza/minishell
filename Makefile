@@ -1,54 +1,73 @@
-NAME        = minishell
-CC          = cc
-# 1. On retire -lreadline d'ici
-CFLAGS      = -Wall -Wextra -Werror -g -g3 -fsanitize=address
+# ==============================================================================
+#                                     CONFIG
+# ==============================================================================
 
-SRC_DIR     = src
-OBJ_DIR     = obj
-INC_DIR     = include
-LIBFT_DIR   = ./libft
-LIBFT       = $(LIBFT_DIR)/libft.a
+NAME        =	minishell
 
-# 2. On crée une variable pour les librairies
-# (Note: Sur Linux -lreadline suffit, sur Mac 42 il faut souvent les chemins -L...)
-LIBS        = -lreadline
+CC          =	cc
+CFLAGS      =	-Wall -Wextra -Werror -g3 -fsanitize=address
 
-# 3. Correction des includes (Ajout du -I devant LIBFT_DIR)
-INCLUDES    = -I$(INC_DIR) -I$(LIBFT_DIR)
+SRC_DIR     =	src
+OBJ_DIR     =	obj
+INC_DIR     =	include
+LIBFT_DIR   =	./libft
 
-RED         = \033[0;31m
-GREEN       = \033[0;32m
-YELLOW      = \033[0;33m
-BLUE        = \033[0;34m
-MAGENTA     = \033[0;35m
-CYAN        = \033[0;36m
-WHITE       = \033[0;37m
-RESET       = \033[0m
+LIBFT       =	$(LIBFT_DIR)/libft.a
+LIBS        =	-lreadline
+INCLUDES    =	-I$(INC_DIR) -I$(LIBFT_DIR)
 
-SRCS        = $(SRC_DIR)/main.c $(SRC_DIR)/clean.c $(SRC_DIR)/lexer.c $(SRC_DIR)/lexer_separator.c $(SRC_DIR)/token_utils.c
-OBJS        = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-HEADERS     = $(INC_DIR)/minishell.h
+# ==============================================================================
+#                                     SOURCES
+# ==============================================================================
+
+SRCS_FILES  =	main.c \
+				clean.c \
+				lexer.c \
+				lexer_separator.c \
+				parser.c \
+				parse_pipe.c \
+				parser_utils.c \
+				token_utils.c
+
+SRCS        =	$(addprefix $(SRC_DIR)/, $(SRCS_FILES))
+OBJS        =	$(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+HEADERS     =	$(INC_DIR)/minishell.h
+
+# ==============================================================================
+#                                     COLORS
+# ==============================================================================
+
+RED         =	\033[0;31m
+GREEN       =	\033[0;32m
+YELLOW      =	\033[0;33m
+CYAN        =	\033[0;36m
+RESET       =	\033[0m
+
+# ==============================================================================
+#                                     RULES
+# ==============================================================================
 
 all: $(NAME)
 
+# Creation du dossier obj si inexistant
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 	@echo "$(CYAN)Creating object directory...$(RESET)"
 
+# Compilation des objets
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS) | $(OBJ_DIR)
 	@echo "$(YELLOW)Compiling $<...$(RESET)"
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-# 4. Correction de l'ordre de compilation
-# $(LIBS) est mis tout à la fin
+# Linkage final
 $(NAME): $(OBJS) $(LIBFT)
 	@echo "$(GREEN)Linking $(NAME)...$(RESET)"
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LIBS) -o $(NAME)
 	@echo "$(GREEN)✓ $(NAME) compiled successfully!$(RESET)"
 
-# 5. Appel de 'bonus' pour avoir ft_lstnew (si ton Makefile Libft a une règle bonus)
+# Compilation de la Libft
 $(LIBFT):
-	@echo "Compilation de la Libft..."
+	@echo "Compiling Libft..."
 	@make bonus -C $(LIBFT_DIR)
 
 clean:
@@ -67,4 +86,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re help
+.PHONY: all clean fclean re

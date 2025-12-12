@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:16 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/08 21:48:04 by sreffers         ###   ########.fr       */
+/*   Updated: 2025/12/12 23:06:29 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,77 @@ void	init_minishell(t_minishell *shell, char **env)
 	}
 }
 
+/* Fonction utilitaire pour imprimer N espaces */
+void print_indent(int level)
+{
+    while (level > 0)
+    {
+        printf("    "); // 4 espaces par niveau
+        level--;
+    }
+}
+
+/* Fonction récursive d'affichage */
+void print_ast(t_ast *node, int level)
+{
+    t_list  *tmp;
+    t_redirection *redir;
+
+    if (!node)
+        return ;
+
+    print_indent(level);
+
+    // CAS 1 : C'est un PIPE
+    if (node->type == NODE_PIPE)
+    {
+        printf("[ PIPE | ]\n");
+        print_ast(node->left, level + 1);
+        print_ast(node->right, level + 1);
+    }
+    // --- NOUVEAU : CAS 2 : C'est un ET / OU ---
+    else if (node->type == NODE_AND || node->type == NODE_OR)
+    {
+        if (node->type == NODE_AND)
+            printf("[ AND && ]\n");
+        else
+            printf("[ OR || ]\n");
+
+        // On affiche les enfants récursivement
+        print_ast(node->left, level + 1);
+        print_ast(node->right, level + 1);
+    }
+    // ------------------------------------------
+    // CAS 3 : C'est une COMMANDE
+    else if (node->type == NODE_CMD)
+    {
+        printf("[ CMD ] args: ");
+        tmp = node->args_list;
+        while (tmp)
+        {
+            printf("'%s' ", (char *)tmp->content);
+            tmp = tmp->next;
+        }
+        printf("\n");
+
+        tmp = node->redirection;
+        while (tmp)
+        {
+            redir = (t_redirection *)tmp->content;
+            print_indent(level + 1);
+            if (redir->type == TOKEN_TRUNC) printf("Redir: > %s\n", redir->path);
+            else if (redir->type == TOKEN_APPEND) printf("Redir: >> %s\n", redir->path);
+            else if (redir->type == TOKEN_INPUT) printf("Redir: < %s\n", redir->path);
+            else if (redir->type == TOKEN_HEREDOC) printf("Redir: << %s\n", redir->path);
+            tmp = tmp->next;
+        }
+    }
+}
 int main(int ac, char **av, char **env)
 {
 	t_minishell	shell;
 	char		*input;
+	t_ast		*ast;
 
 	(void)av;
 	if(ac != 1)
@@ -92,8 +159,14 @@ int main(int ac, char **av, char **env)
 		if(input[0] != '\0')
 		{
 			add_history(input);
+
 			if(lexer(&shell, input))
 			{
+				ast = parse_logic(&shell.token, &shell);
+				if(ast)
+				{
+					print_ast(ast, 0);
+				}
 			}
 		}
 		free(input);

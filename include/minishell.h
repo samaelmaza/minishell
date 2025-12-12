@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/08 21:00:14 by sreffers         ###   ########.fr       */
+/*   Updated: 2025/12/12 22:59:42 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ typedef struct s_ast
 	struct s_ast	*right;
 	char			**args;
 	t_list			*redirection;
+	t_list			*args_list;
 }	t_ast;
 
 typedef struct s_token
@@ -79,5 +80,14 @@ void	token_add_back(t_token **lst, t_token *new);
 t_token	*new_token(char	*value, t_token_type type);
 t_token	*handle_separator(char *input, int *i);
 int		lexer(t_minishell *shell, char *input);
+int		check_token(t_token *token, t_token_type type);
+t_token	*new_token(char	*value, t_token_type type);
+void	token_add_back(t_token **lst, t_token *new);
+t_token	*get_next_token(t_token **token);
+t_ast	*new_ast_node(t_node_type type);
+int		append_arg(t_ast *node, char *value);
+t_ast	*parse_cmd(t_token **tokens, t_minishell *shell);
+t_ast	*parse_pipeline(t_token **tokens, t_minishell *shell);
+t_ast	*parse_logic(t_token **tokens, t_minishell *shell);
 
 #endif

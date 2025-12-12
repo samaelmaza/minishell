@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 21:39:09 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/08 21:47:50 by sreffers         ###   ########.fr       */
+/*   Updated: 2025/12/12 22:48:21 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_token	*get_next_token(t_token **token)
 	*token = (*token)->next;
 	return (current);
 }
-t_ast   *new_ast_node(t_node_type type)
+t_ast	*new_ast_node(t_node_type type)
 {
 	t_ast	*node;
 
@@ -39,6 +39,27 @@ t_ast   *new_ast_node(t_node_type type)
 	node->left = NULL;
 	node->right = NULL;
 	node->args = NULL;
+	node->args_list = NULL;
 	node->redirection = NULL;
 	return (node);
+}
+
+int	append_arg(t_ast *node, char *value)
+{
+	char	*cpy;
+	t_list	*new_arg;
+
+	if(!node || !value)
+		return (0);
+	cpy = ft_strdup(value);
+	if(!cpy)
+		return (0);
+	new_arg = ft_lstnew(cpy);
+	if(!new_arg)
+	{
+		free(cpy);
+		return (0);
+	}
+	ft_lstadd_back(&node->args_list, new_arg);
+	return (1);
 }
