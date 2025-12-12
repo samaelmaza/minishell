@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:16 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/12 23:06:29 by sreffers         ###   ########.fr       */
+/*   Updated: 2025/12/13 00:36:54 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,24 @@ void print_ast(t_ast *node, int level)
         }
     }
 }
+
+void	print_env(char **env)
+{
+	int i = 0;
+	while(env[i])
+	{
+		if(ft_strncmp(env[i], "USER", 4) == 0)
+		{
+			if(env[i][4]=='=')
+			{
+				printf("%s\n", env[i]);
+			}
+		}
+		i++;
+	}
+
+}
+
 int main(int ac, char **av, char **env)
 {
 	t_minishell	shell;
@@ -165,6 +183,7 @@ int main(int ac, char **av, char **env)
 				ast = parse_logic(&shell.token, &shell);
 				if(ast)
 				{
+					//get_env_value("USER", &shell);
 					print_ast(ast, 0);
 				}
 			}
