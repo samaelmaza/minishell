@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 00:26:11 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/05 20:08:08 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/07 12:31:45 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ char	*get_env_value(char *var, t_minishell *shell)
 int	len_exit_code(int exit_code)
 {
 	int len = 0;
+	if (exit_code == 0)
+		return (1);
 	while (exit_code > 0)
 	{
 		exit_code = exit_code/10;
@@ -81,23 +83,28 @@ int	get_expand_line(char *str, t_minishell *shell)
 		{
 			if(quote == 2)
 				len++;
-			if(quote == 0)
-				quote = 1;
-			else if(quote == 1)
-				quote = 0;
+			else
+				quote = (quote == 0) ? 1 : 0;
 			i++;
 		}
 		else if (str[i] == '"')
 		{
 			if (quote == 1)
 				len++;
-			if (quote == 0)
-				quote = 2;
-			else if (quote == 2)
-				quote = 0;
+			else
+				quote = (quote == 0) ? 2 : 0;
+			i++;
 		}
 		else if (str[i] == "$" && quote != 1)
-			len += get_var_len(str, &i, shell);
+		{
+			if(!ft_isalnum(str[i + 1]) && str[i + 1] != '_' && str[i + 1] != '?')
+			{
+				len++;
+				i++;
+			}
+			else
+				len += get_var_len(str, &i, shell);
+		}
 		else
 		{
 			len++;
@@ -105,4 +112,19 @@ int	get_expand_line(char *str, t_minishell *shell)
 		}
 	}
 	return (len);
+}
+
+char *expand_string(char *str, t_minishell *shell)
+{
+	int		i;
+	int		j;
+	char	*expanded;
+
+	i = 0;
+	j = 0;
+	expanded = malloc(sizeof(char) * (get_expand_line(str, shell) + 1));
+	if (!expanded)
+		return (NULL);
+
+
 }

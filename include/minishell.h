@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/12 22:59:42 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/07 11:51:30 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,6 @@ int		append_arg(t_ast *node, char *value);
 t_ast	*parse_cmd(t_token **tokens, t_minishell *shell);
 t_ast	*parse_pipeline(t_token **tokens, t_minishell *shell);
 t_ast	*parse_logic(t_token **tokens, t_minishell *shell);
+int		get_expand_line(char *str, t_minishell *shell);
 
 #endif
