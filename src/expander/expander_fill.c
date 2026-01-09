@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 11:33:42 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 18:16:17 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 19:23:55 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ static void	copy_env_var(char *str, char *res, int *i, int *j, t_minishell *shel
 	int		start;
 	int		k;
 
+	k = 0;
 	start = *i;
 	while(ft_isalnum(str[*i]) || str[*i] == '_')
 		(*i)++;
@@ -60,7 +61,7 @@ void	add_var_value(char *str, char *res, int *i, int *j, t_minishell *shell)
 
 	k = 0;
 	(*i)++;
-	if(str[*i + 1] == '?')
+	if(str[*i] == '?')
 	{
 		(*i)++;
 		var_val = ft_itoa(shell->exit_code);
@@ -71,17 +72,19 @@ void	add_var_value(char *str, char *res, int *i, int *j, t_minishell *shell)
 		free(var_val);
 	}
 	else
-		copy_env_var(str, res, &i, &j, shell);
+		copy_env_var(str, res, i, j, shell);
 }
 
 char	*expand_string(char *str, t_minishell *shell)
 {
 	char	*res;
-	int		len;
 	int		i;
 	int		j;
 	int		quote;
 
+	i = 0;
+	j = 0;
+	quote = 0;
 	res = malloc(sizeof(char) * (get_expand_line(str, shell) + 1));
 	if(!res)
 		return (NULL);

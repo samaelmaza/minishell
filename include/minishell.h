@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 16:40:40 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 19:07:11 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,5 +93,7 @@ int		get_expand_line(char *str, t_minishell *shell);
 char	*get_env_value(char *var, t_minishell *shell);
 int		is_quote_toggle(char c, int *quote);
 int		is_var(char c);
+char	*expand_string(char *str, t_minishell *shell);
+void	expand_ast(t_ast *node, t_minishell *shell);
 
 #endif

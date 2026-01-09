@@ -24,10 +24,13 @@ SRCS_FILES  =	main.c \
 				clean.c \
 				lexer/lexer.c \
 				lexer/lexer_separator.c \
+				lexer/token_utils.c \
 				parser/parser.c \
 				parser/parse_pipe.c \
 				parser/parser_utils.c \
-				lexer/token_utils.c
+				expander/expander_fill.c \
+				expander/expander_len.c \
+				expander/expander.c \
 
 SRCS        =	$(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 OBJS        =	$(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

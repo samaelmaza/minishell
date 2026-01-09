@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 11:33:29 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 16:39:41 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 19:09:54 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	get_expand_line(char *str, t_minishell *shell)
 	{
 		if (is_quote_toggle(str[i], &quote))
 			i++;
-		else if (str[i] == "$" && quote != 1 && is_var(str[i + 1]))
+		else if (str[i] == '$' && quote != 1 && is_var(str[i + 1]))
 			len += get_var_len(str, &i, shell);
 		else
 		{
