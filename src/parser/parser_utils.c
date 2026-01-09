@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 21:39:09 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 11:50:11 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 23:34:21 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ t_ast	*new_ast_node(t_node_type type)
 	node->type = type;
 	node->left = NULL;
 	node->right = NULL;
-	node->args = NULL;
 	node->args_list = NULL;
 	node->redirection = NULL;
 	return (node);

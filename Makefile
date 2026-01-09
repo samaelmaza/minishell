@@ -22,6 +22,7 @@ INCLUDES    =	-I$(INC_DIR) -I$(LIBFT_DIR)
 
 SRCS_FILES  =	main.c \
 				clean.c \
+				env/env_utils.c \
 				lexer/lexer.c \
 				lexer/lexer_separator.c \
 				lexer/token_utils.c \
@@ -31,6 +32,11 @@ SRCS_FILES  =	main.c \
 				expander/expander_fill.c \
 				expander/expander_len.c \
 				expander/expander.c \
+				execution/exec_cmd.c \
+				execution/exec_logic.c \
+				execution/exec_main.c \
+				execution/exec_pipe.c \
+
 
 SRCS        =	$(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 OBJS        =	$(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 19:07:11 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 23:52:09 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "../libft/libft.h"
+#include <sys/wait.h>
 
 typedef struct s_token t_token;
 
@@ -62,7 +63,6 @@ typedef struct s_ast
 	t_node_type		type;
 	struct s_ast	*left;
 	struct s_ast	*right;
-	char			**args;
 	t_list			*redirection;
 	t_list			*args_list;
 }	t_ast;
@@ -95,5 +95,11 @@ int		is_quote_toggle(char c, int *quote);
 int		is_var(char c);
 char	*expand_string(char *str, t_minishell *shell);
 void	expand_ast(t_ast *node, t_minishell *shell);
+int		execute_ast(t_ast *node, t_minishell *shell);
+// int		exec_pipe(t_ast *node, t_minishell *shell);
+// int		exec_logic(t_ast *node, t_minishell *shell);
+int		exec_cmd(t_ast *node, t_minishell *shell);
+char	**env_list_to_tab(t_list *env);
+
 
 #endif

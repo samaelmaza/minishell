@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:16 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 19:06:42 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 23:49:24 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,6 +184,7 @@ int main(int ac, char **av, char **env)
 				if(ast)
 				{
 					expand_ast(ast, &shell);
+					execute_ast(ast, &shell);
 					//get_env_value("USER", &shell);
 					print_ast(ast, 0);
 				}
