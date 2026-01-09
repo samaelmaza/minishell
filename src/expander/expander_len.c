@@ -1,36 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand.c                                           :+:      :+:    :+:   */
+/*   expander_len.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/13 00:26:11 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/07 12:31:45 by sreffers         ###   ########.fr       */
+/*   Created: 2026/01/09 11:33:29 by sreffers          #+#    #+#             */
+/*   Updated: 2026/01/09 16:39:41 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
-char	*get_env_value(char *var, t_minishell *shell)
+int	is_quote_toggle(char c, int *quote)
 {
-	int	size;
-	t_list	*current;
-	char	*content;
-
-	current = shell->env;
-	size = ft_strlen(var);
-	while(current)
+	if (c == '\'' && *quote != 2)
 	{
-		content = (char *)current->content;
-		if (ft_strncmp(content, var, size) == 0)
-		{
-			if (content[size] == '=')
-				return (content + size + 1);
-		}
-		current = current->next;
+		*quote = (*quote == 0) ? 1 : 0;
+		return (1);
 	}
-	return ("");
+	if (c == '"' && *quote != 1)
+	{
+		*quote = (*quote == 0) ? 2 : 0;
+		return (1);
+	}
+	return (0);
 }
 
 int	len_exit_code(int exit_code)
@@ -68,43 +62,25 @@ int	get_var_len(char *str, int *i, t_minishell *shell)
 	free(var_name);
 	return (len);
 }
-
+int	is_var(char c)
+{
+	return (ft_isalnum(c) || c == '_' || c == '?');
+}
 int	get_expand_line(char *str, t_minishell *shell)
 {
 	int	i;
 	int	len;
-	int quote = 0; // 0 = default 1 =  ' 2 = ""
+	int quote; // 0 = default 1 =  ' 2 = ""
 
 	i = 0;
 	len = 0;
-	while(str[i])
+	quote = 0;
+	while (str[i])
 	{
-		if (str[i] == '\'')
-		{
-			if(quote == 2)
-				len++;
-			else
-				quote = (quote == 0) ? 1 : 0;
+		if (is_quote_toggle(str[i], &quote))
 			i++;
-		}
-		else if (str[i] == '"')
-		{
-			if (quote == 1)
-				len++;
-			else
-				quote = (quote == 0) ? 2 : 0;
-			i++;
-		}
-		else if (str[i] == "$" && quote != 1)
-		{
-			if(!ft_isalnum(str[i + 1]) && str[i + 1] != '_' && str[i + 1] != '?')
-			{
-				len++;
-				i++;
-			}
-			else
-				len += get_var_len(str, &i, shell);
-		}
+		else if (str[i] == "$" && quote != 1 && is_var(str[i + 1]))
+			len += get_var_len(str, &i, shell);
 		else
 		{
 			len++;
@@ -112,19 +88,4 @@ int	get_expand_line(char *str, t_minishell *shell)
 		}
 	}
 	return (len);
-}
-
-char *expand_string(char *str, t_minishell *shell)
-{
-	int		i;
-	int		j;
-	char	*expanded;
-
-	i = 0;
-	j = 0;
-	expanded = malloc(sizeof(char) * (get_expand_line(str, shell) + 1));
-	if (!expanded)
-		return (NULL);
-
-
 }

@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/07 11:51:30 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 16:40:40 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,5 +90,8 @@ t_ast	*parse_cmd(t_token **tokens, t_minishell *shell);
 t_ast	*parse_pipeline(t_token **tokens, t_minishell *shell);
 t_ast	*parse_logic(t_token **tokens, t_minishell *shell);
 int		get_expand_line(char *str, t_minishell *shell);
+char	*get_env_value(char *var, t_minishell *shell);
+int		is_quote_toggle(char c, int *quote);
+int		is_var(char c);
 
 #endif

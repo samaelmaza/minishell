@@ -22,12 +22,12 @@ INCLUDES    =	-I$(INC_DIR) -I$(LIBFT_DIR)
 
 SRCS_FILES  =	main.c \
 				clean.c \
-				lexer.c \
-				lexer_separator.c \
-				parser.c \
-				parse_pipe.c \
-				parser_utils.c \
-				token_utils.c
+				lexer/lexer.c \
+				lexer/lexer_separator.c \
+				parser/parser.c \
+				parser/parse_pipe.c \
+				parser/parser_utils.c \
+				lexer/token_utils.c
 
 SRCS        =	$(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 OBJS        =	$(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
@@ -49,13 +49,8 @@ RESET       =	\033[0m
 
 all: $(NAME)
 
-# Creation du dossier obj si inexistant
-$(OBJ_DIR):
-	@mkdir -p $(OBJ_DIR)
-	@echo "$(CYAN)Creating object directory...$(RESET)"
-
-# Compilation des objets
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS) | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
+	@mkdir -p $(dir $@)
 	@echo "$(YELLOW)Compiling $<...$(RESET)"
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 

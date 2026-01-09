@@ -6,11 +6,11 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 20:12:08 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/12 22:50:38 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 11:50:26 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	parse_redir(t_ast *node, t_token **tokens, t_minishell *shell)
 {

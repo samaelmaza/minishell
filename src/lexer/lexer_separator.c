@@ -6,11 +6,11 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 16:51:45 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/08 16:53:09 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 11:49:13 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 static t_token	*handle_redirect(char *input, int *i)
 {

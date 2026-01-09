@@ -6,11 +6,11 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 16:06:53 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/05 19:51:19 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 11:55:09 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 t_token	*new_token(char	*value, t_token_type type)
 {

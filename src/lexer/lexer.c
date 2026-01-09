@@ -6,11 +6,11 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 16:40:01 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/08 21:02:56 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 11:49:18 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	is_whitespace(char c)
 {

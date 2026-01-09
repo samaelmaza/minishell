@@ -6,11 +6,11 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 22:21:02 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/12 23:05:35 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/09 11:50:06 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 t_ast	*parse_pipeline(t_token **tokens, t_minishell *shell)
 {
