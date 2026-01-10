@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 22:49:25 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 23:53:21 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/10 19:49:42 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,17 +51,61 @@ void	free_tab(char **tab)
 	}
 	free(tab);
 }
+static char	*search_in_paths(char **paths, char *cmd)
+{
+	char	*temp;
+	char	*full_path;
+	int		i;
+
+	i = 0;
+	while (paths[i])
+	{
+		temp = ft_strjoin(paths[i], "/");
+		if(!temp)
+			return (cmd);
+		full_path = ft_strjoin(temp, cmd);
+		free(temp);
+		if(access(full_path, F_OK | X_OK) == 0)
+			return (full_path);
+		free(full_path);
+		i++;
+	}
+	return (NULL);
+}
+char	*get_cmd_path(char *cmd, t_minishell *shell)
+{
+	char	*path_var;
+	char	**paths;
+	char	*final_path;
+
+	if((cmd && ft_strchr(cmd, '/') != 0) || cmd[0] == '.')
+		return (ft_strdup(cmd));
+	path_var = get_env_value("PATH", shell);
+	if (!path_var)
+		return (ft_strdup(cmd));
+	paths = ft_split(path_var, ':');
+	final_path = search_in_paths(paths, cmd);
+	free_tab(paths);
+	if(final_path)
+		return (final_path);
+	return (ft_strdup(cmd));
+	if(!paths)
+		return (ft_strdup(cmd));
+}
+
 int	exec_cmd(t_ast *node, t_minishell *shell)
 {
 	char	**av;
 	char	**env;
 	pid_t	pid;
 	int		status;
+	char	*path;
 
 	av = get_argv(node->args_list);
 	env = env_list_to_tab(shell->env);
 	if(!env || !av)
 		return (1);
+	path = get_cmd_path(av[0], shell);
 	pid = fork();
 	if(pid == -1)
 	{
@@ -72,15 +116,18 @@ int	exec_cmd(t_ast *node, t_minishell *shell)
 	}
 	if(pid == 0)
 	{
-		if((execve(av[0], av, env)) == -1)
+		if((execve(path, av, env)) == -1)
 		{
 			perror("minishell");
+			free(path);
 			free_tab(env);
 			free_tab(av);
 			shell->exit_code = 127;
 			exit(127);
+			//TODO, clean everything.
 		}
 	}
+	free(path);
 	free_tab(env);
 	free_tab(av);
 	waitpid(pid, &status, 0);
