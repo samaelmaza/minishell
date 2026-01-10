@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:16 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 23:49:24 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/10 22:29:28 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	init_minishell(t_minishell *shell, char **env)
 	i = 0;
 	shell->env = NULL;
 	shell->exit_code = 0;
+	shell->is_child = 0;
 	while(env[i])
 	{
 		content = ft_strdup(env[i]);
@@ -157,7 +158,6 @@ int main(int ac, char **av, char **env)
 {
 	t_minishell	shell;
 	char		*input;
-	t_ast		*ast;
 
 	(void)av;
 	if(ac != 1)
@@ -166,6 +166,7 @@ int main(int ac, char **av, char **env)
 		return (1);
 	}
 	init_minishell(&shell, env);
+	shell.ast = NULL;
 	while (1)
 	{
 		input = readline("minishell$> ");
@@ -180,17 +181,24 @@ int main(int ac, char **av, char **env)
 
 			if(lexer(&shell, input))
 			{
-				ast = parse_logic(&shell.token, &shell);
-				if(ast)
+				t_token *parse_token = shell.token;
+				shell.ast = parse_logic(&parse_token, &shell);
+				if(shell.ast)
 				{
-					expand_ast(ast, &shell);
-					execute_ast(ast, &shell);
+					expand_ast(shell.ast, &shell);
+					execute_ast(shell.ast, &shell);
 					//get_env_value("USER", &shell);
-					print_ast(ast, 0);
+					//print_ast(shell.ast, 0);
+					free_ast(shell.ast);
+					shell.ast = NULL;
 				}
 			}
+			free_token(&shell.token);
 		}
 		free(input);
 	}
+	if(shell.env)
+		ft_lstclear(&shell.env, del_content);
+	rl_clear_history();
 	return (shell.exit_code);
 }

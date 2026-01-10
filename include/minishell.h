@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 23:52:09 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/10 22:28:45 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,14 @@
 #include <sys/wait.h>
 
 typedef struct s_token t_token;
-
+typedef struct s_ast t_ast;
 typedef struct s_minishell
 {
 	t_list  *env;
 	int		exit_code;
 	t_token	*token;
+	t_ast	*ast;
+	int		is_child;
 }	t_minishell;
 
 typedef enum	e_token_type
@@ -96,10 +98,13 @@ int		is_var(char c);
 char	*expand_string(char *str, t_minishell *shell);
 void	expand_ast(t_ast *node, t_minishell *shell);
 int		execute_ast(t_ast *node, t_minishell *shell);
-// int		exec_pipe(t_ast *node, t_minishell *shell);
+int		exec_pipe(t_ast *node, t_minishell *shell);
 // int		exec_logic(t_ast *node, t_minishell *shell);
 int		exec_cmd(t_ast *node, t_minishell *shell);
 char	**env_list_to_tab(t_list *env);
-
+void	free_ast(t_ast *node);
+void	del_content(void *content);
+void	free_token(t_token **token);
+void	free_child(t_minishell *shell);
 
 #endif

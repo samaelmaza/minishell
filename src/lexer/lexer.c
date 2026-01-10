@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 16:40:01 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 11:49:18 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/10 22:45:18 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ t_token	*handle_word(char *input, int *i)
 	int		start;
 	int 	size;
 	char	*word;
+	t_token	*token;
 
 	start = *i;
 	size = get_word_len(input + start);
@@ -73,8 +74,12 @@ t_token	*handle_word(char *input, int *i)
 	word = ft_substr(input, start, size);
 	if (!word)
 		return (NULL);
+	token = new_token(word, TOKEN_WORD);
+	free(word);
+	if(!token)
+		return (NULL);
 	*i += size;
-	return (new_token(word, TOKEN_WORD));
+	return (token);
 }
 
 int	lexer(t_minishell *shell, char *input)

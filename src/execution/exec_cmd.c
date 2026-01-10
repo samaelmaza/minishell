@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 22:49:25 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/10 19:49:42 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/10 22:33:10 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,20 @@ int	exec_cmd(t_ast *node, t_minishell *shell)
 	if(!env || !av)
 		return (1);
 	path = get_cmd_path(av[0], shell);
+	if (shell->is_child == 1)
+	{
+		if((execve(path, av, env)) == -1)
+		{
+			perror("minishell");
+			free(path);
+			free_tab(env);
+			free_tab(av);
+			shell->exit_code = 127;
+			free_child(shell);
+			exit(127);
+			//TODO, clean everything.
+		}
+	}
 	pid = fork();
 	if(pid == -1)
 	{
@@ -123,6 +137,7 @@ int	exec_cmd(t_ast *node, t_minishell *shell)
 			free_tab(env);
 			free_tab(av);
 			shell->exit_code = 127;
+			free_child(shell);
 			exit(127);
 			//TODO, clean everything.
 		}
