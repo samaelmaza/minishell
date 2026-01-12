@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/10 22:28:45 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/12 23:39:52 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "../libft/libft.h"
@@ -106,5 +107,6 @@ void	free_ast(t_ast *node);
 void	del_content(void *content);
 void	free_token(t_token **token);
 void	free_child(t_minishell *shell);
+int		handle_redirections(t_list	*redirection);
 
 #endif

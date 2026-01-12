@@ -36,6 +36,7 @@ SRCS_FILES  =	main.c \
 				execution/exec_logic.c \
 				execution/exec_main.c \
 				execution/exec_pipe.c \
+				execution/exec_redir.c \
 				utils/free_ast.c \
 
 
