@@ -6,12 +6,14 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/12 23:39:52 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/14 14:31:02 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 #define MINISHELL_H
+
+# define _GNU_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +22,7 @@
 #include <readline/history.h>
 #include "../libft/libft.h"
 #include <sys/wait.h>
+#include <signal.h>
 
 typedef struct s_token t_token;
 typedef struct s_ast t_ast;
@@ -108,5 +111,6 @@ void	del_content(void *content);
 void	free_token(t_token **token);
 void	free_child(t_minishell *shell);
 int		handle_redirections(t_list	*redirection);
+void	init_signals(void);
 
 #endif

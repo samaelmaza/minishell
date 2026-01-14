@@ -6,11 +6,23 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 21:26:18 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/10 22:08:06 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/14 11:28:13 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+void	free_redir(void *content)
+{
+	t_redirection	*redir;
+
+	redir = (t_redirection *)content;
+	if(!redir)
+		return ;
+	if(redir->path)
+		free(redir->path);
+	free(redir);
+}
 
 void	free_token(t_token **token)
 {
@@ -45,6 +57,8 @@ void	free_ast(t_ast *node)
 	free_ast(node->right);
 	if(node->args_list)
 		ft_lstclear(&node->args_list, del_content);
+	if(node->redirection)
+		ft_lstclear(&node->redirection, free_redir);
 	free(node);
 }
 

@@ -38,6 +38,7 @@ SRCS_FILES  =	main.c \
 				execution/exec_pipe.c \
 				execution/exec_redir.c \
 				utils/free_ast.c \
+				signals/signals.c \
 
 
 SRCS        =	$(addprefix $(SRC_DIR)/, $(SRCS_FILES))

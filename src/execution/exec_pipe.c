@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 22:49:36 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/10 22:29:48 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/14 11:38:46 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int	exec_pipe(t_ast *node, t_minishell *shell)
 	}
 	if(pid_right == 0)
 	{
+		shell->is_child = 1;
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		close(fd[1]);

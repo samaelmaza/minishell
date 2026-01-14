@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:16 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/10 22:29:28 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/14 14:30:52 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,7 @@ int main(int ac, char **av, char **env)
 	t_minishell	shell;
 	char		*input;
 
+	init_signals();
 	(void)av;
 	if(ac != 1)
 	{
