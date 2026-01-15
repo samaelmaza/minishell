@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/14 14:31:02 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/15 12:23:22 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ typedef enum	e_token_type
 }	t_token_type;
 typedef struct s_redirection
 {
-	t_token_type	type;   // TOKEN_INPUT, TRUNC, APPEND ou HEREDOC
-	char			*path;  // Le nom du fichier (ou le délimiteur heredoc)
+	t_token_type	type;
+	char			*path;
 	// char         **expanded_args; // (Pour plus tard: si le nom du fichier est une var $FILE)
 }	t_redirection;
 
@@ -112,5 +112,12 @@ void	free_token(t_token **token);
 void	free_child(t_minishell *shell);
 int		handle_redirections(t_list	*redirection);
 void	init_signals(void);
+void	set_childs_signals(void);
+void	ignore_signals(void);
+int		ft_echo(char **args);
+int		ft_pwd(void);
+int		ft_env(t_minishell *shell);
+int		is_builtin(char *cmd);
+char	**get_argv(t_list *args);
 
 #endif

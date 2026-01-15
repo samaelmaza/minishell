@@ -6,13 +6,13 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 22:49:25 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/13 00:06:04 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/15 12:23:12 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static char	**get_argv(t_list *args)
+char	**get_argv(t_list *args)
 {
 	int	len;
 	int	i;
@@ -95,6 +95,7 @@ char	*get_cmd_path(char *cmd, t_minishell *shell)
 
 void	child_routine(t_ast *node, t_minishell *shell, char *path, char **av, char **env)
 {
+	set_childs_signals();
 	if(node->redirection)
 		{
 			if(handle_redirections(node->redirection) != 0)
@@ -141,6 +142,7 @@ int	exec_cmd(t_ast *node, t_minishell *shell)
 	free_tab(av);
 	if(pid == -1)
 		return (perror("fork"), 1);
+	ignore_signals();
 	waitpid(pid, &status, 0);
 	if(WIFEXITED(status))
 		return (WEXITSTATUS(status));
