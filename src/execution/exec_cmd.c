@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 22:49:25 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/15 22:05:23 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/15 22:47:00 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 char	**get_argv(t_list *args)
 {
-	int	len;
-	int	i;
-	char **new_args;
+	int		len;
+	int		i;
+	char	**new_args;
 
 	len = ft_lstsize(args);
 	i = 0;
@@ -26,9 +26,9 @@ char	**get_argv(t_list *args)
 	while (i < len)
 	{
 		new_args[i] = ft_strdup((char *)args->content);
-		if(!new_args[i])
+		if (!new_args[i])
 		{
-			while(i > 0)
+			while (i > 0)
 				free(new_args[--i]);
 			free(new_args);
 			return (NULL);
@@ -37,7 +37,7 @@ char	**get_argv(t_list *args)
 		args = args->next;
 	}
 	new_args[i] = 0;
-	return new_args;
+	return (new_args);
 }
 
 static char	*search_in_paths(char **paths, char *cmd)
@@ -50,17 +50,18 @@ static char	*search_in_paths(char **paths, char *cmd)
 	while (paths[i])
 	{
 		temp = ft_strjoin(paths[i], "/");
-		if(!temp)
-			return (cmd);
+		if (!temp)
+			return (NULL);
 		full_path = ft_strjoin(temp, cmd);
 		free(temp);
-		if(access(full_path, F_OK | X_OK) == 0)
+		if (access(full_path, F_OK | X_OK) == 0)
 			return (full_path);
 		free(full_path);
 		i++;
 	}
 	return (NULL);
 }
+
 char	*get_cmd_path(char *cmd, t_minishell *shell)
 {
 	char	*path_var;
@@ -82,54 +83,53 @@ char	*get_cmd_path(char *cmd, t_minishell *shell)
 	return (ft_strdup(cmd));
 }
 
-void	child_routine(t_ast *node, t_minishell *shell, char *path, char **av, char **env)
+static void	child_cleanup(char *path, char **av, char **env, t_minishell *sh)
 {
+	free(path);
+	free_tab(env);
+	free_tab(av);
+	free_child(sh);
+}
+
+static void	child_routine(t_ast *node, t_minishell *sh, char *path, char **av)
+{
+	char	**env;
+
+	env = env_list_to_tab(sh->env);
 	set_childs_signals();
-	if(node->redirection)
-		{
-			if(handle_redirections(node->redirection) != 0)
-			{
-				free(path);
-				free_tab(env);
-				free_tab(av);
-				free_child(shell);
-				exit(1);
-			}
-		}
-		if((execve(path, av, env)) == -1)
-		{
-			perror("minishell");
-			free(path);
-			free_tab(env);
-			free_tab(av);
-			shell->exit_code = 127;
-			free_child(shell);
-			exit(127);
-		}
+	if (node->redirection && handle_redirections(node->redirection) != 0)
+	{
+		child_cleanup(path, av, env, sh);
+		exit(1);
+	}
+	if (execve(path, av, env) == -1)
+	{
+		perror("minishell");
+		sh->exit_code = 127;
+		child_cleanup(path, av, env, sh);
+		exit(127);
+	}
 }
 
 int	exec_cmd(t_ast *node, t_minishell *shell)
 {
 	char	**av;
-	char	**env;
 	pid_t	pid;
 	int		status;
 	char	*path;
 
 	av = get_argv(node->args_list);
-	env = env_list_to_tab(shell->env);
-	if(!env || !av)
+	if (!av)
 		return (1);
 	path = get_cmd_path(av[0], shell);
 	if (shell->is_child == 1)
-		child_routine(node, shell, path, av, env);
+		child_routine(node, shell, path, av);
 	pid = fork();
-	if(pid == 0)
-		child_routine(node, shell, path, av, env);
+	if (pid == 0)
+		child_routine(node, shell, path, av);
 	free(path);
-	free_tab(env);
 	free_tab(av);
-	if(pid == -1)
+	if (pid == -1)
 		return (perror("fork"), 1);
 	ignore_signals();
 	waitpid(pid, &status, 0);

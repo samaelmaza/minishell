@@ -14,13 +14,13 @@
 
 void	free_content(void	*content)
 {
-	if(content)
+	if (content)
 		free(content);
 }
 
 void	clean_exit(t_minishell *shell, int exit_code)
 {
-	if(shell->env)
+	if (shell->env)
 		ft_lstclear(&shell->env, free_content);
 	exit(exit_code);
 }

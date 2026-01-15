@@ -14,21 +14,21 @@
 
 int	is_builtin(char *cmd)
 {
-	if(!cmd)
+	if (!cmd)
 		return (0);
-	if(ft_strcmp(cmd, "echo") == 0)
+	if (ft_strcmp(cmd, "echo") == 0)
 		return (1);
-	if(ft_strcmp(cmd, "cd") == 0)
+	if (ft_strcmp(cmd, "cd") == 0)
 		return (1);
-	if(ft_strcmp(cmd, "pwd") == 0)
+	if (ft_strcmp(cmd, "pwd") == 0)
 		return (1);
-	if(ft_strcmp(cmd, "export") == 0)
+	if (ft_strcmp(cmd, "export") == 0)
 		return (1);
-	if(ft_strcmp(cmd, "unset") == 0)
+	if (ft_strcmp(cmd, "unset") == 0)
 		return (1);
-	if(ft_strcmp(cmd, "env") == 0)
+	if (ft_strcmp(cmd, "env") == 0)
 		return (1);
-	if(ft_strcmp(cmd, "exit") == 0)
+	if (ft_strcmp(cmd, "exit") == 0)
 		return (1);
 	return (0);
 }
@@ -49,7 +49,7 @@ int	exec_builtin(t_ast *node, t_minishell *shell)
 	else if (ft_strcmp(cmd, "env") == 0)
 		ret = ft_env(shell);
 	free_tab(args);
-	if(shell->is_child)
+	if (shell->is_child)
 	{
 		free_child(shell);
 		exit(ret);

@@ -17,9 +17,9 @@ int	ft_env(t_minishell *shell)
 	t_list	*tmp;
 
 	tmp = shell->env;
-	while(tmp)
+	while (tmp)
 	{
-		if(ft_strchr((char *)tmp->content, '='))
+		if (ft_strchr((char *)tmp->content, '='))
 			printf("%s\n", (char *)tmp->content);
 		tmp = tmp->next;
 	}
@@ -61,7 +61,7 @@ int	ft_echo(char **args)
 
 	i = 1;
 	n_flag = 0;
-	while(args[i] && is_n_flag(args[i]))
+	while (args[i] && is_n_flag(args[i]))
 	{
 		n_flag = 1;
 		i++;
@@ -69,11 +69,11 @@ int	ft_echo(char **args)
 	while(args[i])
 	{
 		printf("%s", args[i]);
-		if(args[i + 1])
+		if (args[i + 1])
 			printf(" ");
 		i++;
 	}
-	if(!n_flag)
+	if (!n_flag)
 		printf("\n");
 	return (0);
 }

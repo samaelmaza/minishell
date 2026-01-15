@@ -82,6 +82,13 @@ t_token	*handle_word(char *input, int *i)
 	return (token);
 }
 
+static t_token	*get_next_lex_token(char *input, int *i)
+{
+	if (is_separator(input[*i]))
+		return (handle_separator(input, i));
+	return (handle_word(input, i));
+}
+
 int	lexer(t_minishell *shell, char *input)
 {
 	int		i;
@@ -91,16 +98,12 @@ int	lexer(t_minishell *shell, char *input)
 	shell->token = NULL;
 	while (input[i])
 	{
-		if (is_whitespace(input[i]))
-		{
+		while (is_whitespace(input[i]))
 			i++;
-			continue ;
-		}
-		if (is_separator(input[i]))
-			new = handle_separator(input, &i);
-		else
-			new = handle_word(input, &i);
-		if(!new)
+		if (!input[i])
+			break ;
+		new = get_next_lex_token(input, &i);
+		if (!new)
 		{
 			shell->exit_code = 2;
 			return (0);
