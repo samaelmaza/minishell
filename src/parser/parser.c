@@ -23,7 +23,7 @@ int	parse_redir(t_ast *node, t_token **tokens, t_minishell *shell)
 	file = (*tokens)->next;
 	if(!file || file->type != TOKEN_WORD)
 	{
-		printf("Syntax error near unexpected token");
+		printf("Syntax error near unexpected token\n");
 		shell->exit_code = 2;
 		return (0);
 	}
@@ -58,7 +58,7 @@ t_ast	*parse_cmd(t_token **tokens, t_minishell *shell)
 	if(check_token(*tokens, TOKEN_PIPE) || check_token(*tokens, TOKEN_AND)
 		|| check_token(*tokens, TOKEN_OR) || check_token(*tokens, TOKEN_R_PARENT))
 	{
-		printf("Syntax error near unexpected token");
+		printf("Syntax error near unexpected token\n");
 		shell->exit_code = 2;
 		return (NULL);
 	}

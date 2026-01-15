@@ -59,9 +59,11 @@ int	exec_pipe(t_ast *node, t_minishell *shell)
 	}
 	close(fd[0]);
 	close(fd[1]);
+	ignore_signals();
 	waitpid(pid_left, NULL, 0);
 	waitpid(pid_right, &status, 0);
-	if(WIFEXITED(status))
+	init_signals();
+	if (WIFEXITED(status))
 		exit_code = WEXITSTATUS(status);
 	else
 		exit_code = 128;

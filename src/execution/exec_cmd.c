@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 22:49:25 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/15 12:23:12 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/15 22:05:23 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,18 +39,7 @@ char	**get_argv(t_list *args)
 	new_args[i] = 0;
 	return new_args;
 }
-void	free_tab(char **tab)
-{
-	int	i;
 
-	i = 0;
-	while(tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
-}
 static char	*search_in_paths(char **paths, char *cmd)
 {
 	char	*temp;
@@ -78,19 +67,19 @@ char	*get_cmd_path(char *cmd, t_minishell *shell)
 	char	**paths;
 	char	*final_path;
 
-	if((cmd && ft_strchr(cmd, '/') != 0) || cmd[0] == '.')
+	if ((cmd && ft_strchr(cmd, '/') != 0) || cmd[0] == '.')
 		return (ft_strdup(cmd));
 	path_var = get_env_value("PATH", shell);
-	if (!path_var)
+	if (!path_var || *path_var == '\0')
 		return (ft_strdup(cmd));
 	paths = ft_split(path_var, ':');
+	if (!paths)
+		return (ft_strdup(cmd));
 	final_path = search_in_paths(paths, cmd);
 	free_tab(paths);
-	if(final_path)
+	if (final_path)
 		return (final_path);
 	return (ft_strdup(cmd));
-	if(!paths)
-		return (ft_strdup(cmd));
 }
 
 void	child_routine(t_ast *node, t_minishell *shell, char *path, char **av, char **env)
@@ -144,7 +133,8 @@ int	exec_cmd(t_ast *node, t_minishell *shell)
 		return (perror("fork"), 1);
 	ignore_signals();
 	waitpid(pid, &status, 0);
-	if(WIFEXITED(status))
+	init_signals();
+	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);
 }

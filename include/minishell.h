@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/15 12:23:22 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/15 22:05:44 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,5 +119,7 @@ int		ft_pwd(void);
 int		ft_env(t_minishell *shell);
 int		is_builtin(char *cmd);
 char	**get_argv(t_list *args);
+int		exec_builtin(t_ast *node, t_minishell *shell);
+void	free_tab(char **tab);
 
 #endif

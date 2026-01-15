@@ -40,8 +40,13 @@ static t_token	*handle_logic(char *input, int *i)
 {
 	if (input[*i] == '&')
 	{
-		*i += 2;
-		return (new_token("&&", TOKEN_AND));
+		if (input[*i + 1] == '&')
+		{
+			*i += 2;
+			return (new_token("&&", TOKEN_AND));
+		}
+		printf("minishell: syntax error near unexpected token `&'\n");
+		return (NULL);
 	}
 	if (input[*i] == '|' && input[*i + 1] == '|')
 	{

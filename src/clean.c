@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 15:56:47 by sreffers          #+#    #+#             */
-/*   Updated: 2025/12/08 15:59:24 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/15 22:05:30 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,17 @@ void	clean_exit(t_minishell *shell, int exit_code)
 	if(shell->env)
 		ft_lstclear(&shell->env, free_content);
 	exit(exit_code);
+}
+
+void	free_tab(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while(tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
 }
