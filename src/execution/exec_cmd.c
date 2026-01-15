@@ -156,12 +156,18 @@ static void	child_routine(t_ast *node, t_minishell *sh, char *path, char **av)
 	exit(1);
 }
 
-static int	get_exit_status(int status)
+int	get_exit_status(int status)
 {
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGINT)
+			write(1, "\n", 1);
+		else if (WTERMSIG(status) == SIGQUIT)
+			ft_putstr_fd("Quit (core dumped)\n", 2);
 		return (128 + WTERMSIG(status));
+	}
 	return (1);
 }
 

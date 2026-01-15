@@ -119,6 +119,7 @@ int		ft_pwd(void);
 int		ft_env(t_minishell *shell);
 int		is_builtin(char *cmd);
 char	**get_argv(t_list *args);
+int		get_exit_status(int status);
 int		exec_builtin(t_ast *node, t_minishell *shell);
 void	free_tab(char **tab);
 

@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:11:24 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/15 11:00:43 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/16 00:31:01 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	handle_sigint(int sig)
 	(void)sig;
 	write(1, "\n", 1);
 	rl_on_new_line();
-	rl_replace_line("", 0);
+	rl_replace_line("\n", 1);
 	rl_redisplay();
 }
 

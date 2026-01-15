@@ -37,17 +37,12 @@ static void	pipe_child_right(int *fd, t_ast *node, t_minishell *shell)
 static int	wait_for_children(pid_t pid_left, pid_t pid_right)
 {
 	int	status;
-	int	exit_code;
 
 	ignore_signals();
 	waitpid(pid_left, NULL, 0);
 	waitpid(pid_right, &status, 0);
 	init_signals();
-	if (WIFEXITED(status))
-		exit_code = WEXITSTATUS(status);
-	else
-		exit_code = 128;
-	return (exit_code);
+	return (get_exit_status(status));
 }
 
 int	exec_pipe(t_ast *node, t_minishell *shell)
