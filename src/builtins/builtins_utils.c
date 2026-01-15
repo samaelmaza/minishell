@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 12:18:52 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/15 22:04:26 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/15 23:23:00 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,46 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
+static int	run_builtin(char **args, t_minishell *shell)
+{
+	char	*cmd;
+
+	cmd = args[0];
+	if (ft_strcmp(cmd, "echo") == 0)
+		return (ft_echo(args));
+	else if (ft_strcmp(cmd, "pwd") == 0)
+		return (ft_pwd());
+	else if (ft_strcmp(cmd, "env") == 0)
+		return (ft_env(shell));
+	return (0);
+}
+
 int	exec_builtin(t_ast *node, t_minishell *shell)
 {
 	char	**args;
 	int		ret;
-	char	*cmd;
+	int		saved_stdin;
+	int		saved_stdout;
 
 	args = get_argv(node->args_list);
-	cmd = args[0];
-	ret = 0;
-	if (ft_strcmp(cmd, "echo") == 0)
-		ret = ft_echo(args);
-	else if (ft_strcmp(cmd, "pwd") == 0)
-		ret = ft_pwd();
-	else if (ft_strcmp(cmd, "env") == 0)
-		ret = ft_env(shell);
+	if (!args)
+		return (1);
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+	if (node->redirection && handle_redirections(node->redirection) != 0)
+	{
+		dup2(saved_stdin, STDIN_FILENO);
+		dup2(saved_stdout, STDOUT_FILENO);
+		close(saved_stdin);
+		close(saved_stdout);
+		free_tab(args);
+		return (1);
+	}
+	ret = run_builtin(args, shell);
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
 	free_tab(args);
 	if (shell->is_child)
 	{

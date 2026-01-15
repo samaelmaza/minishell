@@ -6,11 +6,12 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 22:49:25 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/15 22:47:00 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/15 23:30:00 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include <sys/stat.h>
 
 char	**get_argv(t_list *args)
 {
@@ -54,7 +55,7 @@ static char	*search_in_paths(char **paths, char *cmd)
 			return (NULL);
 		full_path = ft_strjoin(temp, cmd);
 		free(temp);
-		if (access(full_path, F_OK | X_OK) == 0)
+		if (access(full_path, F_OK) == 0)
 			return (full_path);
 		free(full_path);
 		i++;
@@ -68,7 +69,9 @@ char	*get_cmd_path(char *cmd, t_minishell *shell)
 	char	**paths;
 	char	*final_path;
 
-	if ((cmd && ft_strchr(cmd, '/') != 0) || cmd[0] == '.')
+	if (!cmd || !*cmd)
+		return (NULL);
+	if (ft_strchr(cmd, '/') != NULL)
 		return (ft_strdup(cmd));
 	path_var = get_env_value("PATH", shell);
 	if (!path_var || *path_var == '\0')
@@ -80,20 +83,59 @@ char	*get_cmd_path(char *cmd, t_minishell *shell)
 	free_tab(paths);
 	if (final_path)
 		return (final_path);
-	return (ft_strdup(cmd));
+	return (NULL);
+}
+
+static int	check_cmd_errors(char *path, char *cmd)
+{
+	struct stat	st;
+
+	if (!path)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": command not found\n", 2);
+		return (127);
+	}
+	if (stat(path, &st) == -1)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		return (127);
+	}
+	if (S_ISDIR(st.st_mode))
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": Is a directory\n", 2);
+		return (126);
+	}
+	if (access(path, X_OK) == -1)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": Permission denied\n", 2);
+		return (126);
+	}
+	return (0);
 }
 
 static void	child_cleanup(char *path, char **av, char **env, t_minishell *sh)
 {
-	free(path);
-	free_tab(env);
-	free_tab(av);
+	if (path)
+		free(path);
+	if (av)
+		free_tab(av);
+	if (env)
+		free_tab(env);
 	free_child(sh);
 }
 
 static void	child_routine(t_ast *node, t_minishell *sh, char *path, char **av)
 {
 	char	**env;
+	int		err;
 
 	env = env_list_to_tab(sh->env);
 	set_childs_signals();
@@ -102,13 +144,25 @@ static void	child_routine(t_ast *node, t_minishell *sh, char *path, char **av)
 		child_cleanup(path, av, env, sh);
 		exit(1);
 	}
-	if (execve(path, av, env) == -1)
+	err = check_cmd_errors(path, av[0]);
+	if (err != 0)
 	{
-		perror("minishell");
-		sh->exit_code = 127;
 		child_cleanup(path, av, env, sh);
-		exit(127);
+		exit(err);
 	}
+	execve(path, av, env);
+	perror("minishell");
+	child_cleanup(path, av, env, sh);
+	exit(1);
+}
+
+static int	get_exit_status(int status)
+{
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
+	return (1);
 }
 
 int	exec_cmd(t_ast *node, t_minishell *shell)
@@ -119,22 +173,25 @@ int	exec_cmd(t_ast *node, t_minishell *shell)
 	char	*path;
 
 	av = get_argv(node->args_list);
-	if (!av)
-		return (1);
+	if (!av || !av[0])
+	{
+		if (av)
+			free_tab(av);
+		return (0);
+	}
 	path = get_cmd_path(av[0], shell);
 	if (shell->is_child == 1)
 		child_routine(node, shell, path, av);
 	pid = fork();
 	if (pid == 0)
 		child_routine(node, shell, path, av);
-	free(path);
+	if (path)
+		free(path);
 	free_tab(av);
 	if (pid == -1)
 		return (perror("fork"), 1);
 	ignore_signals();
 	waitpid(pid, &status, 0);
 	init_signals();
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	return (1);
+	return (get_exit_status(status));
 }

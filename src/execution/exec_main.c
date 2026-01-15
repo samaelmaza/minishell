@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 22:39:29 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/15 22:47:00 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/15 23:23:00 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,25 @@ static int	exec_logic_or(t_ast *node, t_minishell *shell)
 	return (exit_code);
 }
 
+static int	exec_redir_only(t_ast *node, t_minishell *shell)
+{
+	int	saved_stdin;
+	int	saved_stdout;
+	int	ret;
+
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+	ret = handle_redirections(node->redirection);
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
+	if (ret != 0)
+		return (1);
+	(void)shell;
+	return (0);
+}
+
 static int	exec_simple_cmd(t_ast *node, t_minishell *shell)
 {
 	char	*cmd_name;
@@ -40,7 +59,11 @@ static int	exec_simple_cmd(t_ast *node, t_minishell *shell)
 		cmd_name = (char *)node->args_list->content;
 	else
 		cmd_name = NULL;
-	if (cmd_name && is_builtin(cmd_name))
+	if (!cmd_name && node->redirection)
+		return (exec_redir_only(node, shell));
+	if (!cmd_name)
+		return (0);
+	if (is_builtin(cmd_name))
 		return (exec_builtin(node, shell));
 	return (exec_cmd(node, shell));
 }
@@ -50,7 +73,7 @@ int	execute_ast(t_ast *node, t_minishell *shell)
 	int	exit_code;
 
 	if (!node)
-		return (1);
+		return (shell->exit_code);
 	exit_code = 0;
 	if (node->type == NODE_AND)
 		exit_code = exec_logic_and(node, shell);
