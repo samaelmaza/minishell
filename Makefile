@@ -44,6 +44,7 @@ SRCS_FILES  =	main.c \
 				builtins/builtins_export.c \
 				builtins/export_utils.c \
 				builtins/builtins_unset.c \
+				builtins/builtins_cd.c \
 
 
 SRCS        =	$(addprefix $(SRC_DIR)/, $(SRCS_FILES))
