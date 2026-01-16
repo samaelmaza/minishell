@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/15 22:05:44 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/16 21:37:47 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,5 +122,8 @@ char	**get_argv(t_list *args);
 int		get_exit_status(int status);
 int		exec_builtin(t_ast *node, t_minishell *shell);
 void	free_tab(char **tab);
-
+void	update_env(t_minishell *shell, char *str);
+int		is_valid_env_key(char *key);
+int		ft_export(char **args, t_minishell *shell);
+int		ft_unset(char **args, t_minishell *shell);
 #endif

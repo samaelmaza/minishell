@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_export.c                                   :+:      :+:    :+:   */
+/*   builtins_export.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 12:37:43 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/16 13:14:52 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/16 20:51:14 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static void	ft_sort_tab(char **tab)
 	len = 0;
 	while(tab[len])
 		len++;
+	i = 0;
 	while(i < len)
 	{
 		j = i + 1;
@@ -42,7 +43,6 @@ static void	ft_sort_tab(char **tab)
 static void print_sorted_env(t_minishell *shell)
 {
 	char	**tab;
-	int		len;
 	int		i;
 
 	tab = env_list_to_tab(shell->env);
@@ -72,6 +72,14 @@ int	ft_export(char **args, t_minishell *shell)
 	{
 		if(is_valid_env_key(args[i]))
 			update_env(shell, args[i]);
-
+		else
+		{
+			ft_putstr_fd("minishell: export '", 2);
+			ft_putstr_fd(args[i], 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
+			exit_status = 1;
+		}
+		i++;
 	}
+	return (exit_status);
 }

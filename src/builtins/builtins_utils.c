@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 12:18:52 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/15 23:23:00 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/16 21:37:37 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,10 @@ static int	run_builtin(char **args, t_minishell *shell)
 		return (ft_pwd());
 	else if (ft_strcmp(cmd, "env") == 0)
 		return (ft_env(shell));
+	else if (ft_strcmp(cmd, "export") == 0)
+		return (ft_export(args, shell));
+	else if (ft_strcmp(cmd, "unset") == 0)
+		return (ft_unset(args, shell));
 	return (0);
 }
 

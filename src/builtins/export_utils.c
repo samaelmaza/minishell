@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 13:08:38 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/16 13:18:32 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/16 20:42:52 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,26 @@ int	is_valid_env_key(char *key)
 	}
 	return (1);
 }
+t_list	*find_env_node(t_list *env, char *key)
+{
+	t_list	*tmp;
+	int		len;
+	char	*content;
+
+	tmp = env;
+	len = ft_strlen(key);
+	while(tmp)
+	{
+		content = (char *)tmp->content;
+		if(ft_strncmp(content, key, len) == 0)
+		{
+			if(content[len] == '=' || content[len] == '\0')
+				return (tmp);
+		}
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
 
 void	update_env(t_minishell *shell, char *str)
 {
@@ -44,4 +64,15 @@ void	update_env(t_minishell *shell, char *str)
 	if(!key)
 		return ;
 	node = find_env_node(shell->env, key);
+	free(key);
+	if(node)
+	{
+		if(equal_pos || ft_strchr((char *)node->content, '=') == NULL)
+		{
+			free(node->content);
+			node->content = ft_strdup(str);
+		}
+	}
+	else
+		ft_lstadd_back(&shell->env, ft_lstnew(ft_strdup(str)));
 }
