@@ -19,17 +19,17 @@ void	delete_env_node(t_minishell *shell, char *key)
 	int		len;
 	char	*content;
 
-	if(!shell->env || !key)
+	if (!shell->env || !key)
 		return ;
 	current = shell->env;
 	prev = NULL;
 	len = ft_strlen(key);
-	while(current)
+	while (current)
 	{
 		content = (char *)current->content;
-		if(ft_strncmp(content, key, len) == 0 && (content[len] == '=' || content[len] == '\0'))
+		if (ft_strncmp(content, key, len) == 0 && (content[len] == '=' || content[len] == '\0'))
 		{
-			if(prev == NULL)
+			if (prev == NULL)
 				shell->env = current->next;
 			else
 				prev->next = current->next;
@@ -47,7 +47,7 @@ int	ft_unset(char **args, t_minishell *shell)
 	int	i;
 
 	i = 1;
-	while(args[i])
+	while (args[i])
 	{
 		delete_env_node(shell, args[i]);
 		i++;

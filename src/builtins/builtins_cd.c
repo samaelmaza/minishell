@@ -17,7 +17,7 @@ static void	update_wds(t_minishell *shell)
 	char	cwd[1024];
 	char	*tmp;
 
-	if(getcwd(cwd, sizeof(cwd)))
+	if (getcwd(cwd, sizeof(cwd)))
 	{
 		tmp = ft_strjoin("PWD=", cwd);
 		update_env(shell, tmp);

@@ -30,7 +30,7 @@ int	ft_pwd(void)
 {
 	char	cwd[1024];
 
-	if(getcwd(cwd, sizeof(cwd)))
+	if (getcwd(cwd, sizeof(cwd)))
 	{
 		printf("%s\n", cwd);
 		return (0);
@@ -38,6 +38,7 @@ int	ft_pwd(void)
 	perror("pwd");
 	return (1);
 }
+
 static int	is_n_flag(char *arg)
 {
 	int	i;
@@ -47,7 +48,7 @@ static int	is_n_flag(char *arg)
 	i = 1;
 	while (arg[i])
 	{
-		if(arg[i] != 'n')
+		if (arg[i] != 'n')
 			return (0);
 		i++;
 	}
@@ -66,7 +67,7 @@ int	ft_echo(char **args)
 		n_flag = 1;
 		i++;
 	}
-	while(args[i])
+	while (args[i])
 	{
 		printf("%s", args[i]);
 		if (args[i + 1])
@@ -77,4 +78,3 @@ int	ft_echo(char **args)
 		printf("\n");
 	return (0);
 }
-

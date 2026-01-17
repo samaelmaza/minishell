@@ -32,6 +32,7 @@ SRCS_FILES  =	main.c \
 				expander/expander_fill.c \
 				expander/expander_len.c \
 				expander/expander.c \
+				expander/wildcard.c \
 				execution/exec_cmd.c \
 				execution/exec_logic.c \
 				execution/exec_main.c \

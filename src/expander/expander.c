@@ -12,34 +12,69 @@
 
 #include "../../include/minishell.h"
 
+int	has_wildcard(char *str)
+{
+	while (*str)
+	{
+		if (*str == '*')
+			return (1);
+		str++;
+	}
+	return (0);
+}
+
 static void	expand_args_list(t_list *args, t_minishell *shell)
 {
 	char	*old_str;
 	char	*new_str;
+	char	**matches;
+	t_list	*current;
 
-	while(args)
+	current = args;
+	while (current)
 	{
-		old_str = (char *)args->content;
+		old_str = (char *)current->content;
 		new_str = expand_string(old_str, shell);
-		if(new_str)
+		if (has_wildcard(new_str))
+		{
+			matches = expand_wildcard(new_str);
+			if (matches && matches[0])
+			{
+				insert_wildcard_matches(current, matches);
+				free(new_str);
+			}
+			else
+			{
+				free_tab(matches);
+				free(old_str);
+				current->content = new_str;
+			}
+		}
+		else
 		{
 			free(old_str);
-			args->content = new_str;
+			current->content = new_str;
 		}
-		args = args->next;
+		current = current->next;
+	}
+	current = args;
+	while (current)
+	{
+		restore_wildcards((char *)current->content);
+		current = current->next;
 	}
 }
 
-static void expand_redirections(t_list *redirection, t_minishell *shell)
+static void	expand_redirections(t_list *redirection, t_minishell *shell)
 {
 	t_redirection	*redir;
 	char			*new_str;
 
-	while(redirection)
+	while (redirection)
 	{
 		redir = (t_redirection *)redirection->content;
 		new_str = expand_string(redir->path, shell);
-		if(new_str)
+		if (new_str)
 		{
 			free(redir->path);
 			redir->path = new_str;
@@ -52,7 +87,7 @@ void	expand_ast(t_ast *node, t_minishell *shell)
 {
 	if (!node)
 		return ;
-	if(node->type == NODE_CMD)
+	if (node->type == NODE_CMD)
 	{
 		expand_args_list(node->args_list, shell);
 		expand_redirections(node->redirection, shell);

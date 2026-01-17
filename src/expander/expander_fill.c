@@ -20,7 +20,7 @@ char	*get_env_value(char *var, t_minishell *shell)
 
 	current = shell->env;
 	size = ft_strlen(var);
-	while(current)
+	while (current)
 	{
 		content = (char *)current->content;
 		if (ft_strncmp(content, var, size) == 0)
@@ -42,13 +42,13 @@ static void	copy_env_var(char *str, char *res, int *i, int *j, t_minishell *shel
 
 	k = 0;
 	start = *i;
-	while(ft_isalnum(str[*i]) || str[*i] == '_')
+	while (ft_isalnum(str[*i]) || str[*i] == '_')
 		(*i)++;
 	var_name = ft_substr(str, start, *i - start);
 	var_val = get_env_value(var_name, shell);
-	if(var_val)
+	if (var_val)
 	{
-		while(var_val[k])
+		while (var_val[k])
 			res[(*j)++] = var_val[k++];
 	}
 	free(var_name);
@@ -61,13 +61,13 @@ void	add_var_value(char *str, char *res, int *i, int *j, t_minishell *shell)
 
 	k = 0;
 	(*i)++;
-	if(str[*i] == '?')
+	if (str[*i] == '?')
 	{
 		(*i)++;
 		var_val = ft_itoa(shell->exit_code);
-		if(!var_val)
+		if (!var_val)
 			return ;
-		while(var_val[k])
+		while (var_val[k])
 			res[(*j)++] = var_val[k++];
 		free(var_val);
 	}
@@ -86,14 +86,19 @@ char	*expand_string(char *str, t_minishell *shell)
 	j = 0;
 	quote = 0;
 	res = malloc(sizeof(char) * (get_expand_line(str, shell) + 1));
-	if(!res)
+	if (!res)
 		return (NULL);
-	while(str[i])
+	while (str[i])
 	{
-		if(is_quote_toggle(str[i], &quote))
+		if (is_quote_toggle(str[i], &quote))
 			i++;
-		else if(str[i] == '$' && quote != 1 && is_var(str[i + 1]))
+		else if (str[i] == '$' && quote != 1 && is_var(str[i + 1]))
 			add_var_value(str, res, &i, &j, shell);
+		else if (str[i] == '*' && quote != 0)
+		{
+			res[j++] = '\x01';
+			i++;
+		}
 		else
 			res[j++] = str[i++];
 	}

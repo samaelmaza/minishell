@@ -19,10 +19,10 @@ t_token	*new_token(char	*value, t_token_type type)
 	new = malloc(sizeof(t_token));
 	if (!new)
 		return (NULL);
-	if(value)
+	if (value)
 	{
 		new->value = ft_strdup(value);
-		if(!new->value)
+		if (!new->value)
 		{
 			free(new);
 			return (NULL);
@@ -40,16 +40,16 @@ void	token_add_back(t_token **lst, t_token *new)
 {
 	t_token *last;
 
-	if(!lst || !new)
+	if (!lst || !new)
 		return ;
-	if(!*lst)
+	if (!*lst)
 	{
 		*lst = new;
 		new->prev = NULL;
 		return ;
 	}
 	last = *lst;
-	while(last->next)
+	while (last->next)
 		last = last->next;
 	last->next = new;
 	new->prev = last;

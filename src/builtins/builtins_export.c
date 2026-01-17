@@ -20,15 +20,15 @@ static void	ft_sort_tab(char **tab)
 	char	*temp;
 
 	len = 0;
-	while(tab[len])
+	while (tab[len])
 		len++;
 	i = 0;
-	while(i < len)
+	while (i < len)
 	{
 		j = i + 1;
-		while(j < len)
+		while (j < len)
 		{
-			if(ft_strcmp(tab[i], tab[j]) > 0)
+			if (ft_strcmp(tab[i], tab[j]) > 0)
 			{
 				temp = tab[i];
 				tab[i] = tab[j];
@@ -40,7 +40,7 @@ static void	ft_sort_tab(char **tab)
 	}
 }
 
-static void print_sorted_env(t_minishell *shell)
+static void	print_sorted_env(t_minishell *shell)
 {
 	char	**tab;
 	int		i;
@@ -48,7 +48,7 @@ static void print_sorted_env(t_minishell *shell)
 	tab = env_list_to_tab(shell->env);
 	ft_sort_tab(tab);
 	i = 0;
-	while(tab[i])
+	while (tab[i])
 	{
 		printf("declare -x %s\n", tab[i]);
 		i++;
@@ -62,15 +62,15 @@ int	ft_export(char **args, t_minishell *shell)
 	int	exit_status;
 
 	exit_status = 0;
-	if(!args[1])
+	if (!args[1])
 	{
 		print_sorted_env(shell);
 		return (0);
 	}
 	i = 1;
-	while(args[i])
+	while (args[i])
 	{
-		if(is_valid_env_key(args[i]))
+		if (is_valid_env_key(args[i]))
 			update_env(shell, args[i]);
 		else
 		{

@@ -42,17 +42,17 @@ int	get_word_len(char *str)
 
 	i = 0;
 	quote = 0;
-	while(str[i])
+	while (str[i])
 	{
-		if(quote == 0 && (str[i] == '\'' || str[i] == '"'))
+		if (quote == 0 && (str[i] == '\'' || str[i] == '"'))
 			quote = str[i];
-		else if(quote != 0 && str[i] == quote)
+		else if (quote != 0 && str[i] == quote)
 			quote = 0;
-		if(quote == 0 && (is_whitespace(str[i]) || is_separator(str[i])))
+		if (quote == 0 && (is_whitespace(str[i]) || is_separator(str[i])))
 			break ;
 		i++;
 	}
-	if(quote != 0)
+	if (quote != 0)
 		return (-1);
 	return (i);
 }
@@ -76,7 +76,7 @@ t_token	*handle_word(char *input, int *i)
 		return (NULL);
 	token = new_token(word, TOKEN_WORD);
 	free(word);
-	if(!token)
+	if (!token)
 		return (NULL);
 	*i += size;
 	return (token);

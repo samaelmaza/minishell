@@ -26,9 +26,9 @@ char	**env_list_to_tab(t_list *env)
 	while (i < len)
 	{
 		new_env[i] = ft_strdup((char *)env->content);
-		if(!new_env[i])
+		if (!new_env[i])
 		{
-			while(i > 0)
+			while (i > 0)
 				free(new_env[--i]);
 			free(new_env);
 			return (NULL);

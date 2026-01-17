@@ -17,9 +17,9 @@ void	free_redir(void *content)
 	t_redirection	*redir;
 
 	redir = (t_redirection *)content;
-	if(!redir)
+	if (!redir)
 		return ;
-	if(redir->path)
+	if (redir->path)
 		free(redir->path);
 	free(redir);
 }
@@ -32,10 +32,10 @@ void	free_token(t_token **token)
 	if (!token || !*token)
 		return ;
 	current = *token;
-	while(current)
+	while (current)
 	{
 		next = current->next;
-		if(current->value)
+		if (current->value)
 			free(current->value);
 		free(current);
 		current = next;
@@ -45,7 +45,7 @@ void	free_token(t_token **token)
 
 void	del_content(void *content)
 {
-	if(content)
+	if (content)
 		free(content);
 }
 
@@ -55,20 +55,20 @@ void	free_ast(t_ast *node)
 		return ;
 	free_ast(node->left);
 	free_ast(node->right);
-	if(node->args_list)
+	if (node->args_list)
 		ft_lstclear(&node->args_list, del_content);
-	if(node->redirection)
+	if (node->redirection)
 		ft_lstclear(&node->redirection, free_redir);
 	free(node);
 }
 
 void	free_child(t_minishell *shell)
 {
-	if(shell->ast)
+	if (shell->ast)
 		free_ast(shell->ast);
-	if(shell->token)
+	if (shell->token)
 		free_token(&shell->token);
-	if(shell->env)
+	if (shell->env)
 		ft_lstclear(&shell->env, del_content);
 	rl_clear_history();
 }

@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/17 00:55:17 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/17 16:44:12 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include "../libft/libft.h"
 #include <sys/wait.h>
 #include <signal.h>
+#include <dirent.h>
 
 typedef struct s_token t_token;
 typedef struct s_ast t_ast;
@@ -128,4 +129,14 @@ int		ft_export(char **args, t_minishell *shell);
 int		ft_unset(char **args, t_minishell *shell);
 int		ft_cd(char **args, t_minishell *shell);
 int		ft_exit(char **args, t_minishell *shell);
+
+/*
+** Wildcard functions
+*/
+int		has_wildcard(char *str);
+int		match_pattern(char *pattern, char *str);
+char	**expand_wildcard(char *pattern);
+void	insert_wildcard_matches(t_list *current, char **matches);
+void	restore_wildcards(char *str);
+
 #endif

@@ -14,7 +14,7 @@
 
 int	check_token(t_token *token, t_token_type type)
 {
-	if(token && token->type == type)
+	if (token && token->type == type)
 		return (1);
 	return (0);
 }
@@ -22,7 +22,7 @@ int	check_token(t_token *token, t_token_type type)
 t_token	*get_next_token(t_token **token)
 {
 	t_token	*current;
-	if(!*token)
+	if (!*token)
 		return (NULL);
 	current = *token;
 	*token = (*token)->next;
@@ -48,13 +48,13 @@ int	append_arg(t_ast *node, char *value)
 	char	*cpy;
 	t_list	*new_arg;
 
-	if(!node || !value)
+	if (!node || !value)
 		return (0);
 	cpy = ft_strdup(value);
-	if(!cpy)
+	if (!cpy)
 		return (0);
 	new_arg = ft_lstnew(cpy);
-	if(!new_arg)
+	if (!new_arg)
 	{
 		free(cpy);
 		return (0);

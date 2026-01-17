@@ -88,4 +88,3 @@ int	ft_exit(char **args, t_minishell *shell)
 	clean_exit(shell, (unsigned char)status);
 	return (0);
 }
-
