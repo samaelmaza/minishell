@@ -20,8 +20,13 @@ void	free_content(void	*content)
 
 void	clean_exit(t_minishell *shell, int exit_code)
 {
+	if (shell->token)
+		free_token(&shell->token);
+	if (shell->ast)
+		free_ast(shell->ast);
 	if (shell->env)
 		ft_lstclear(&shell->env, free_content);
+	rl_clear_history();
 	exit(exit_code);
 }
 

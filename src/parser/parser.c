@@ -109,7 +109,7 @@ t_ast	*parse_cmd(t_token **tokens, t_minishell *shell)
 	{
 		if (handle_cmd_token(node, tokens, shell) == -1)
 		{
-			free(node);
+			free_ast(node);
 			return (NULL);
 		}
 	}

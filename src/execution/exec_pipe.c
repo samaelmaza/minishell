@@ -60,7 +60,12 @@ int	exec_pipe(t_ast *node, t_minishell *shell)
 		pipe_child_left(fd, node, shell);
 	pid_right = fork();
 	if (pid_right == -1)
+	{
+		close(fd[0]);
+		close(fd[1]);
+		waitpid(pid_left, NULL, 0);
 		return (perror("Fork failed"), 1);
+	}
 	if (pid_right == 0)
 		pipe_child_right(fd, node, shell);
 	close(fd[0]);

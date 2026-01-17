@@ -105,6 +105,7 @@ int	lexer(t_minishell *shell, char *input)
 		new = get_next_lex_token(input, &i);
 		if (!new)
 		{
+			free_token(&shell->token);
 			shell->exit_code = 2;
 			return (0);
 		}

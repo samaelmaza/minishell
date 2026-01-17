@@ -31,11 +31,12 @@ int	ft_cd(char **args, t_minishell *shell)
 	char	old_pwd[1024];
 	char	*export_old;
 
-	getcwd(old_pwd, sizeof(old_pwd));
-	if(!args[1])
+	if (!getcwd(old_pwd, sizeof(old_pwd)))
+		old_pwd[0] = '\0';
+	if (!args[1])
 	{
 		path = get_env_value("HOME", shell);
-		if(!path)
+		if (!path)
 		{
 			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
 			return (1);
@@ -43,7 +44,7 @@ int	ft_cd(char **args, t_minishell *shell)
 	}
 	else
 		path = args[1];
-	if(chdir(path) == -1)
+	if (chdir(path) == -1)
 	{
 		perror("minishell: cd");
 		return (1);
