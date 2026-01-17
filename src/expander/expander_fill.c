@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 11:33:42 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 19:23:55 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/17 18:12:18 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char	*get_env_value(char *var, t_minishell *shell)
 {
-	int	size;
+	int		size;
 	t_list	*current;
 	char	*content;
 

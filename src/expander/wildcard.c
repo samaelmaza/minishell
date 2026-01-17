@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 13:52:20 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/17 17:38:57 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/17 18:24:45 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,14 @@ int	match_pattern(char *pattern, char *str)
 		return (0);
 	}
 	if (*pattern == '*')
-		return (match_pattern(pattern + 1, str) || match_pattern(pattern, str + 1));
+		return (match_pattern(pattern + 1, str)
+			|| match_pattern(pattern, str + 1));
 	if (*pattern == *str)
 		return (match_pattern(pattern + 1, str + 1));
 	return (0);
 }
 
-char **expand_wildcard(char *pattern)
+char	**expand_wildcard(char *pattern)
 {
 	DIR				*dir;
 	struct dirent	*entry;
