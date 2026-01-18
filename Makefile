@@ -36,7 +36,6 @@ SRCS_FILES  =	main.c \
 				expander/wildcard.c \
 				execution/exec_cmd.c \
 				execution/exec_heredoc.c \
-				execution/exec_logic.c \
 				execution/exec_main.c \
 				execution/exec_pipe.c \
 				execution/exec_redir.c \
