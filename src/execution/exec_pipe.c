@@ -14,22 +14,22 @@
 
 static void	pipe_child_left(int *fd, t_ast *node, t_minishell *shell)
 {
-	shell->is_child = 1;
 	dup2(fd[1], STDOUT_FILENO);
 	close(fd[0]);
 	close(fd[1]);
 	shell->exit_code = execute_ast(node->left, shell);
+	shell->is_child = 1;
 	free_child(shell);
 	exit(shell->exit_code);
 }
 
 static void	pipe_child_right(int *fd, t_ast *node, t_minishell *shell)
 {
-	shell->is_child = 1;
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
 	close(fd[1]);
 	shell->exit_code = execute_ast(node->right, shell);
+	shell->is_child = 1;
 	free_child(shell);
 	exit(shell->exit_code);
 }

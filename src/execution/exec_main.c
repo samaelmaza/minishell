@@ -32,6 +32,27 @@ static int	exec_logic_or(t_ast *node, t_minishell *shell)
 	return (exit_code);
 }
 
+static int	exec_subshell(t_ast *node, t_minishell *shell)
+{
+	pid_t	pid;
+	int		status;
+
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork"), 1);
+	if (pid == 0)
+	{
+		shell->exit_code = execute_ast(node->left, shell);
+		shell->is_child = 1;
+		free_child(shell);
+		exit(shell->exit_code);
+	}
+	ignore_signals();
+	waitpid(pid, &status, 0);
+	init_signals();
+	return (get_exit_status(status));
+}
+
 static int	exec_redir_only(t_ast *node, t_minishell *shell)
 {
 	int	saved_stdin;
@@ -83,6 +104,8 @@ int	execute_ast(t_ast *node, t_minishell *shell)
 		exit_code = exec_pipe(node, shell);
 	else if (node->type == NODE_CMD)
 		exit_code = exec_simple_cmd(node, shell);
+	else if (node->type == NODE_SUBSHELL)
+		exit_code = exec_subshell(node, shell);
 	shell->exit_code = exit_code;
 	return (exit_code);
 }

@@ -50,6 +50,13 @@ static void	process_input(t_minishell *shell, char *input)
 		if (shell->ast)
 		{
 			expand_ast(shell->ast, shell);
+			if (collect_heredocs_ast(shell->ast) != 0)
+			{
+				free_ast(shell->ast);
+				shell->ast = NULL;
+				free_token(&shell->token);
+				return ;
+			}
 			execute_ast(shell->ast, shell);
 			free_ast(shell->ast);
 			shell->ast = NULL;

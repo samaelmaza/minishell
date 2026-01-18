@@ -12,12 +12,43 @@
 
 #include "../../include/minishell.h"
 
+static t_ast	*parse_primary(t_token **tokens, t_minishell *shell)
+{
+	t_ast	*node;
+	t_ast	*subshell;
+
+	if (check_token(*tokens, TOKEN_L_PARENT))
+	{
+		get_next_token(tokens);
+		node = parse_logic(tokens, shell);
+		if (!node)
+			return (NULL);
+		if (!check_token(*tokens, TOKEN_R_PARENT))
+		{
+			printf("Syntax error: missing closing parenthesis\n");
+			shell->exit_code = 2;
+			free_ast(node);
+			return (NULL);
+		}
+		get_next_token(tokens);
+		subshell = new_ast_node(NODE_SUBSHELL);
+		if (!subshell)
+		{
+			free_ast(node);
+			return (NULL);
+		}
+		subshell->left = node;
+		return (subshell);
+	}
+	return (parse_cmd(tokens, shell));
+}
+
 t_ast	*parse_pipeline(t_token **tokens, t_minishell *shell)
 {
 	t_ast	*left;
 	t_ast	*node;
 
-	left = parse_cmd(tokens, shell);
+	left = parse_primary(tokens, shell);
 	if (!left)
 		return (NULL);
 	if (check_token(*tokens, TOKEN_PIPE))

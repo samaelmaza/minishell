@@ -62,7 +62,8 @@ typedef enum	e_node_type
 	NODE_PIPE,
 	NODE_AND,
 	NODE_OR,
-	NODE_CMD
+	NODE_CMD,
+	NODE_SUBSHELL
 }	t_node_type;
 
 typedef struct s_ast
@@ -104,7 +105,6 @@ char	*expand_string(char *str, t_minishell *shell);
 void	expand_ast(t_ast *node, t_minishell *shell);
 int		execute_ast(t_ast *node, t_minishell *shell);
 int		exec_pipe(t_ast *node, t_minishell *shell);
-// int		exec_logic(t_ast *node, t_minishell *shell);
 int		exec_cmd(t_ast *node, t_minishell *shell);
 char	**env_list_to_tab(t_list *env);
 void	free_ast(t_ast *node);
@@ -112,6 +112,7 @@ void	del_content(void *content);
 void	free_token(t_token **token);
 void	free_child(t_minishell *shell);
 int		handle_redirections(t_list	*redirection);
+int		collect_heredocs_ast(t_ast *node);
 void	init_signals(void);
 void	set_childs_signals(void);
 void	ignore_signals(void);
@@ -129,10 +130,6 @@ int		ft_export(char **args, t_minishell *shell);
 int		ft_unset(char **args, t_minishell *shell);
 int		ft_cd(char **args, t_minishell *shell);
 int		ft_exit(char **args, t_minishell *shell);
-
-/*
-** Wildcard functions
-*/
 int		has_wildcard(char *str);
 int		match_pattern(char *pattern, char *str);
 char	**expand_wildcard(char *pattern);
