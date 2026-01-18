@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 00:26:11 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 19:10:37 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/18 19:20:00 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,38 +23,48 @@ int	has_wildcard(char *str)
 	return (0);
 }
 
-static void	expand_args_list(t_list *args, t_minishell *shell)
+static void	handle_wildcard_match(t_list *current, char *new_str)
+{
+	char	**matches;
+
+	matches = expand_wildcard(new_str);
+	if (matches && matches[0])
+	{
+		insert_wildcard_matches(current, matches);
+		free(new_str);
+	}
+	else
+	{
+		free_tab(matches);
+		free(current->content);
+		current->content = new_str;
+	}
+}
+
+static void	expand_single_arg(t_list *current, t_minishell *shell)
 {
 	char	*old_str;
 	char	*new_str;
-	char	**matches;
+
+	old_str = (char *)current->content;
+	new_str = expand_string(old_str, shell);
+	if (has_wildcard(new_str))
+		handle_wildcard_match(current, new_str);
+	else
+	{
+		free(old_str);
+		current->content = new_str;
+	}
+}
+
+static void	expand_args_list(t_list *args, t_minishell *shell)
+{
 	t_list	*current;
 
 	current = args;
 	while (current)
 	{
-		old_str = (char *)current->content;
-		new_str = expand_string(old_str, shell);
-		if (has_wildcard(new_str))
-		{
-			matches = expand_wildcard(new_str);
-			if (matches && matches[0])
-			{
-				insert_wildcard_matches(current, matches);
-				free(new_str);
-			}
-			else
-			{
-				free_tab(matches);
-				free(old_str);
-				current->content = new_str;
-			}
-		}
-		else
-		{
-			free(old_str);
-			current->content = new_str;
-		}
+		expand_single_arg(current, shell);
 		current = current->next;
 	}
 	current = args;

@@ -38,7 +38,7 @@ t_token	*new_token(char	*value, t_token_type type)
 
 void	token_add_back(t_token **lst, t_token *new)
 {
-	t_token *last;
+	t_token	*last;
 
 	if (!lst || !new)
 		return ;

@@ -96,7 +96,8 @@ t_ast	*parse_cmd(t_token **tokens, t_minishell *shell)
 	t_ast	*node;
 
 	if (check_token(*tokens, TOKEN_PIPE) || check_token(*tokens, TOKEN_AND)
-		|| check_token(*tokens, TOKEN_OR) || check_token(*tokens, TOKEN_R_PARENT))
+		|| check_token(*tokens, TOKEN_OR)
+		|| check_token(*tokens, TOKEN_R_PARENT))
 	{
 		printf("Syntax error near unexpected token\n");
 		shell->exit_code = 2;

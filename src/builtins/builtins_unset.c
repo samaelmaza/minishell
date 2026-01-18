@@ -27,7 +27,8 @@ void	delete_env_node(t_minishell *shell, char *key)
 	while (current)
 	{
 		content = (char *)current->content;
-		if (ft_strncmp(content, key, len) == 0 && (content[len] == '=' || content[len] == '\0'))
+		if (ft_strncmp(content, key, len) == 0
+			&& (content[len] == '=' || content[len] == '\0'))
 		{
 			if (prev == NULL)
 				shell->env = current->next;

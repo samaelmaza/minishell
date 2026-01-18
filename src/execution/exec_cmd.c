@@ -6,84 +6,21 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 22:49:25 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/15 23:30:00 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/18 19:30:00 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 #include <sys/stat.h>
 
-char	**get_argv(t_list *args)
+char	*get_cmd_path(char *cmd, t_minishell *shell);
+
+static int	print_cmd_error(char *cmd, char *msg, int code)
 {
-	int		len;
-	int		i;
-	char	**new_args;
-
-	len = ft_lstsize(args);
-	i = 0;
-	new_args = malloc(sizeof(char *) * (len + 1));
-	if (!new_args)
-		return (NULL);
-	while (i < len)
-	{
-		new_args[i] = ft_strdup((char *)args->content);
-		if (!new_args[i])
-		{
-			while (i > 0)
-				free(new_args[--i]);
-			free(new_args);
-			return (NULL);
-		}
-		i++;
-		args = args->next;
-	}
-	new_args[i] = 0;
-	return (new_args);
-}
-
-static char	*search_in_paths(char **paths, char *cmd)
-{
-	char	*temp;
-	char	*full_path;
-	int		i;
-
-	i = 0;
-	while (paths[i])
-	{
-		temp = ft_strjoin(paths[i], "/");
-		if (!temp)
-			return (NULL);
-		full_path = ft_strjoin(temp, cmd);
-		free(temp);
-		if (access(full_path, F_OK) == 0)
-			return (full_path);
-		free(full_path);
-		i++;
-	}
-	return (NULL);
-}
-
-char	*get_cmd_path(char *cmd, t_minishell *shell)
-{
-	char	*path_var;
-	char	**paths;
-	char	*final_path;
-
-	if (!cmd || !*cmd)
-		return (NULL);
-	if (ft_strchr(cmd, '/') != NULL)
-		return (ft_strdup(cmd));
-	path_var = get_env_value("PATH", shell);
-	if (!path_var || *path_var == '\0')
-		return (ft_strdup(cmd));
-	paths = ft_split(path_var, ':');
-	if (!paths)
-		return (ft_strdup(cmd));
-	final_path = search_in_paths(paths, cmd);
-	free_tab(paths);
-	if (final_path)
-		return (final_path);
-	return (NULL);
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(msg, 2);
+	return (code);
 }
 
 static int	check_cmd_errors(char *path, char *cmd)
@@ -91,33 +28,13 @@ static int	check_cmd_errors(char *path, char *cmd)
 	struct stat	st;
 
 	if (!path)
-	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(": command not found\n", 2);
-		return (127);
-	}
+		return (print_cmd_error(cmd, ": command not found\n", 127));
 	if (stat(path, &st) == -1)
-	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
-		return (127);
-	}
+		return (print_cmd_error(cmd, ": No such file or directory\n", 127));
 	if (S_ISDIR(st.st_mode))
-	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(": Is a directory\n", 2);
-		return (126);
-	}
+		return (print_cmd_error(cmd, ": Is a directory\n", 126));
 	if (access(path, X_OK) == -1)
-	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(": Permission denied\n", 2);
-		return (126);
-	}
+		return (print_cmd_error(cmd, ": Permission denied\n", 126));
 	return (0);
 }
 
@@ -156,21 +73,6 @@ static void	child_routine(t_ast *node, t_minishell *sh, char *path, char **av)
 	exit(1);
 }
 
-int	get_exit_status(int status)
-{
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	if (WIFSIGNALED(status))
-	{
-		if (WTERMSIG(status) == SIGINT)
-			write(1, "\n", 1);
-		else if (WTERMSIG(status) == SIGQUIT)
-			ft_putstr_fd("Quit (core dumped)\n", 2);
-		return (128 + WTERMSIG(status));
-	}
-	return (1);
-}
-
 int	exec_cmd(t_ast *node, t_minishell *shell)
 {
 	char	**av;
@@ -180,11 +82,7 @@ int	exec_cmd(t_ast *node, t_minishell *shell)
 
 	av = get_argv(node->args_list);
 	if (!av || !av[0])
-	{
-		if (av)
-			free_tab(av);
-		return (0);
-	}
+		return (free_tab(av), 0);
 	path = get_cmd_path(av[0], shell);
 	if (shell->is_child == 1)
 		child_routine(node, shell, path, av);

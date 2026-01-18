@@ -6,37 +6,37 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 15:42:21 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/17 16:44:12 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/18 19:10:00 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
-#define MINISHELL_H
-
+# define MINISHELL_H
 # define _GNU_SOURCE
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "../libft/libft.h"
-#include <sys/wait.h>
-#include <signal.h>
-#include <dirent.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <fcntl.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include "../libft/libft.h"
+# include <sys/wait.h>
+# include <signal.h>
+# include <dirent.h>
 
-typedef struct s_token t_token;
-typedef struct s_ast t_ast;
+typedef struct s_token	t_token;
+typedef struct s_ast	t_ast;
+
 typedef struct s_minishell
 {
-	t_list  *env;
+	t_list	*env;
 	int		exit_code;
 	t_token	*token;
 	t_ast	*ast;
 	int		is_child;
 }	t_minishell;
 
-typedef enum	e_token_type
+typedef enum e_token_type
 {
 	TOKEN_WORD,
 	TOKEN_PIPE,
@@ -50,14 +50,14 @@ typedef enum	e_token_type
 	TOKEN_R_PARENT,
 	TOKEN_EOF
 }	t_token_type;
+
 typedef struct s_redirection
 {
 	t_token_type	type;
 	char			*path;
-	// char         **expanded_args; // (Pour plus tard: si le nom du fichier est une var $FILE)
 }	t_redirection;
 
-typedef enum	e_node_type
+typedef enum e_node_type
 {
 	NODE_PIPE,
 	NODE_AND,
@@ -89,8 +89,6 @@ t_token	*new_token(char	*value, t_token_type type);
 t_token	*handle_separator(char *input, int *i);
 int		lexer(t_minishell *shell, char *input);
 int		check_token(t_token *token, t_token_type type);
-t_token	*new_token(char	*value, t_token_type type);
-void	token_add_back(t_token **lst, t_token *new);
 t_token	*get_next_token(t_token **token);
 t_ast	*new_ast_node(t_node_type type);
 int		append_arg(t_ast *node, char *value);
@@ -111,7 +109,7 @@ void	free_ast(t_ast *node);
 void	del_content(void *content);
 void	free_token(t_token **token);
 void	free_child(t_minishell *shell);
-int		handle_redirections(t_list	*redirection);
+int		handle_redirections(t_list *redirection);
 int		collect_heredocs_ast(t_ast *node);
 void	init_signals(void);
 void	set_childs_signals(void);

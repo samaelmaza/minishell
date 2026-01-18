@@ -25,6 +25,7 @@ SRCS_FILES  =	main.c \
 				env/env_utils.c \
 				lexer/lexer.c \
 				lexer/lexer_separator.c \
+				lexer/lexer_word.c \
 				lexer/token_utils.c \
 				parser/parser.c \
 				parser/parse_pipe.c \
@@ -39,6 +40,7 @@ SRCS_FILES  =	main.c \
 				execution/exec_main.c \
 				execution/exec_pipe.c \
 				execution/exec_redir.c \
+				execution/exec_utils.c \
 				utils/free_ast.c \
 				signals/signals.c \
 				builtins/builtins_utils.c \

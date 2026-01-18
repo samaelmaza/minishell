@@ -54,7 +54,7 @@ static int	is_overflow(char *str)
 		digit = str[i] - '0';
 		if (sign == 1 && result > (LONG_MAX - digit) / 10)
 			return (1);
-		if (sign == -1 && -result < (LONG_MIN + digit) / 10)
+		if (sign == -1 && (0 - result) < (LONG_MIN + digit) / 10)
 			return (1);
 		result = result * 10 + digit;
 		i++;

@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 11:33:29 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/09 19:09:54 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/18 19:10:00 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,18 @@ int	is_quote_toggle(char c, int *quote)
 {
 	if (c == '\'' && *quote != 2)
 	{
-		*quote = (*quote == 0) ? 1 : 0;
+		if (*quote == 0)
+			*quote = 1;
+		else
+			*quote = 0;
 		return (1);
 	}
 	if (c == '"' && *quote != 1)
 	{
-		*quote = (*quote == 0) ? 2 : 0;
+		if (*quote == 0)
+			*quote = 2;
+		else
+			*quote = 0;
 		return (1);
 	}
 	return (0);
@@ -29,15 +35,22 @@ int	is_quote_toggle(char c, int *quote)
 
 int	len_exit_code(int exit_code)
 {
-	int len = 0;
+	int	len;
+
+	len = 0;
 	if (exit_code == 0)
 		return (1);
 	while (exit_code > 0)
 	{
-		exit_code = exit_code/10;
+		exit_code = exit_code / 10;
 		len++;
 	}
 	return (len);
+}
+
+int	is_var(char c)
+{
+	return (ft_isalnum(c) || c == '_' || c == '?');
 }
 
 int	get_var_len(char *str, int *i, t_minishell *shell)
@@ -62,15 +75,12 @@ int	get_var_len(char *str, int *i, t_minishell *shell)
 	free(var_name);
 	return (len);
 }
-int	is_var(char c)
-{
-	return (ft_isalnum(c) || c == '_' || c == '?');
-}
+
 int	get_expand_line(char *str, t_minishell *shell)
 {
 	int	i;
 	int	len;
-	int quote; // 0 = default 1 =  ' 2 = ""
+	int	quote;
 
 	i = 0;
 	len = 0;

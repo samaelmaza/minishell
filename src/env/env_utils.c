@@ -14,9 +14,9 @@
 
 char	**env_list_to_tab(t_list *env)
 {
-	int	len;
-	int	i;
-	char **new_env;
+	int		len;
+	int		i;
+	char	**new_env;
 
 	len = ft_lstsize(env);
 	i = 0;
@@ -37,5 +37,5 @@ char	**env_list_to_tab(t_list *env)
 		env = env->next;
 	}
 	new_env[i] = 0;
-	return new_env;
+	return (new_env);
 }

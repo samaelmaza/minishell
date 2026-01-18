@@ -84,12 +84,17 @@ char	**expand_wildcard(char *pattern)
 		return (NULL);
 	}
 	count = 0;
-	while ((entry = readdir(dir)) != NULL)
+	entry = readdir(dir);
+	while (entry != NULL)
 	{
 		if (pattern[0] != '.' && entry->d_name[0] == '.')
-			continue;
+		{
+			entry = readdir(dir);
+			continue ;
+		}
 		if (match_pattern(pattern, entry->d_name))
 			count++;
+		entry = readdir(dir);
 	}
 	closedir(dir);
 	result = malloc(sizeof(char *) * (count + 1));
@@ -103,12 +108,17 @@ char	**expand_wildcard(char *pattern)
 		return (NULL);
 	}
 	i = 0;
-	while ((entry = readdir(dir)) != NULL)
+	entry = readdir(dir);
+	while (entry != NULL)
 	{
 		if (pattern[0] != '.' && entry->d_name[0] == '.')
-			continue;
+		{
+			entry = readdir(dir);
+			continue ;
+		}
 		if (match_pattern(pattern, entry->d_name))
 			result[i++] = ft_strdup(entry->d_name);
+		entry = readdir(dir);
 	}
 	result[i] = 0;
 	closedir(dir);

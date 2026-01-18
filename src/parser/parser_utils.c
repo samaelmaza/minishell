@@ -22,12 +22,14 @@ int	check_token(t_token *token, t_token_type type)
 t_token	*get_next_token(t_token **token)
 {
 	t_token	*current;
+
 	if (!*token)
 		return (NULL);
 	current = *token;
 	*token = (*token)->next;
 	return (current);
 }
+
 t_ast	*new_ast_node(t_node_type type)
 {
 	t_ast	*node;

@@ -16,7 +16,7 @@ static void	ft_sort_tab(char **tab)
 {
 	int		len;
 	int		i;
-	int 	j;
+	int		j;
 	char	*temp;
 
 	len = 0;
