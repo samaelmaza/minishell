@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 22:07:32 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/16 22:31:01 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/19 15:47:57 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,16 @@ int	ft_cd(char **args, t_minishell *shell)
 			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
 			return (1);
 		}
+	}
+	else if(ft_strcmp(args[1], "-") == 0)
+	{
+		path = get_env_value("OLDPWD", shell);
+		if(!path)
+		{
+			ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
+			return (1);
+		}
+		printf("%s\n", path);
 	}
 	else
 		path = args[1];
