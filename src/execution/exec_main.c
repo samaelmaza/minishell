@@ -6,28 +6,20 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 22:39:29 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/15 23:23:00 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/19 17:39:08 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static int	exec_logic_and(t_ast *node, t_minishell *shell)
+static int	exec_logic(t_ast *node, t_minishell *shell)
 {
 	int	exit_code;
 
 	exit_code = execute_ast(node->left, shell);
-	if (exit_code == 0)
+	if (node->type == NODE_AND && exit_code == 0)
 		exit_code = execute_ast(node->right, shell);
-	return (exit_code);
-}
-
-static int	exec_logic_or(t_ast *node, t_minishell *shell)
-{
-	int	exit_code;
-
-	exit_code = execute_ast(node->left, shell);
-	if (exit_code != 0)
+	else if (node->type == NODE_OR && exit_code != 0)
 		exit_code = execute_ast(node->right, shell);
 	return (exit_code);
 }
@@ -96,10 +88,8 @@ int	execute_ast(t_ast *node, t_minishell *shell)
 	if (!node)
 		return (shell->exit_code);
 	exit_code = 0;
-	if (node->type == NODE_AND)
-		exit_code = exec_logic_and(node, shell);
-	else if (node->type == NODE_OR)
-		exit_code = exec_logic_or(node, shell);
+	if (node->type == NODE_AND || node->type == NODE_OR)
+		exit_code = exec_logic(node, shell);
 	else if (node->type == NODE_PIPE)
 		exit_code = exec_pipe(node, shell);
 	else if (node->type == NODE_CMD)

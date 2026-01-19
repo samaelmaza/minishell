@@ -6,11 +6,21 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 21:09:28 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/16 21:37:12 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/19 17:46:50 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+static void	remove_and_free(t_minishell *shell, t_list *current, t_list *prev)
+{
+	if (prev)
+		prev->next = current->next;
+	else
+		shell->env = current->next;
+	free(current->content);
+	free(current);
+}
 
 void	delete_env_node(t_minishell *shell, char *key)
 {
@@ -30,12 +40,7 @@ void	delete_env_node(t_minishell *shell, char *key)
 		if (ft_strncmp(content, key, len) == 0
 			&& (content[len] == '=' || content[len] == '\0'))
 		{
-			if (prev == NULL)
-				shell->env = current->next;
-			else
-				prev->next = current->next;
-			free(current->content);
-			free(current);
+			remove_and_free(shell, current, prev);
 			return ;
 		}
 		prev = current;

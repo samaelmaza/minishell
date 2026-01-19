@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 12:18:52 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/17 00:54:45 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/19 18:12:42 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,14 @@ static int	run_builtin(char **args, t_minishell *shell)
 	return (0);
 }
 
+static void	reset_std(int saved_stdin, int saved_stdout)
+{
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
+}
+
 int	exec_builtin(t_ast *node, t_minishell *shell)
 {
 	char	**args;
@@ -68,19 +76,10 @@ int	exec_builtin(t_ast *node, t_minishell *shell)
 	saved_stdin = dup(STDIN_FILENO);
 	saved_stdout = dup(STDOUT_FILENO);
 	if (node->redirection && handle_redirections(node->redirection) != 0)
-	{
-		dup2(saved_stdin, STDIN_FILENO);
-		dup2(saved_stdout, STDOUT_FILENO);
-		close(saved_stdin);
-		close(saved_stdout);
-		free_tab(args);
-		return (1);
-	}
-	ret = run_builtin(args, shell);
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
-	close(saved_stdin);
-	close(saved_stdout);
+		ret = 1;
+	else
+		ret = run_builtin(args, shell);
+	reset_std(saved_stdin, saved_stdout);
 	free_tab(args);
 	if (shell->is_child)
 	{

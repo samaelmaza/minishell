@@ -6,22 +6,11 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 00:26:11 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/18 19:20:00 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/19 18:20:11 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-int	has_wildcard(char *str)
-{
-	while (*str)
-	{
-		if (*str == '*')
-			return (1);
-		str++;
-	}
-	return (0);
-}
 
 static void	handle_wildcard_match(t_list *current, char *new_str)
 {
@@ -48,7 +37,9 @@ static void	expand_single_arg(t_list *current, t_minishell *shell)
 
 	old_str = (char *)current->content;
 	new_str = expand_string(old_str, shell);
-	if (has_wildcard(new_str))
+	if (!new_str)
+		return ;
+	if (ft_strchr(new_str, '*'))
 		handle_wildcard_match(current, new_str);
 	else
 	{
