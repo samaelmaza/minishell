@@ -6,7 +6,7 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 20:12:08 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/19 18:28:16 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/20 18:40:50 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,18 +60,19 @@ static int	is_stop_token(t_token_type type)
 		|| type == TOKEN_OR || type == TOKEN_R_PARENT || type == TOKEN_EOF);
 }
 
-static int	is_redir_token(t_token_type type)
-{
-	return (type == TOKEN_HEREDOC || type == TOKEN_INPUT
-		|| type == TOKEN_APPEND || type == TOKEN_TRUNC);
-}
+// static int	is_redir_token(t_token_type type)
+// {
+// 	return (type == TOKEN_HEREDOC || type == TOKEN_INPUT
+// 		|| type == TOKEN_APPEND || type == TOKEN_TRUNC);
+// }
 
 static int	handle_cmd_token(t_ast *node, t_token **tok, t_minishell *shell)
 {
 	t_token_type	type;
 
 	type = (*tok)->type;
-	if (is_redir_token(type))
+	if (type == TOKEN_HEREDOC || type == TOKEN_INPUT
+		|| type == TOKEN_APPEND || type == TOKEN_TRUNC)
 	{
 		if (!parse_redir(node, tok, shell))
 			return (-1);
@@ -97,7 +98,8 @@ t_ast	*parse_cmd(t_token **tokens, t_minishell *shell)
 
 	if (check_token(*tokens, TOKEN_PIPE) || check_token(*tokens, TOKEN_AND)
 		|| check_token(*tokens, TOKEN_OR)
-		|| check_token(*tokens, TOKEN_R_PARENT))
+		|| check_token(*tokens, TOKEN_R_PARENT)
+		|| check_token(*tokens, TOKEN_EOF))
 	{
 		printf("Syntax error near unexpected token\n");
 		shell->exit_code = 2;

@@ -29,11 +29,13 @@ SRCS_FILES  =	main.c \
 				lexer/token_utils.c \
 				parser/parser.c \
 				parser/parse_pipe.c \
+				parser/parse_logic.c \
 				parser/parser_utils.c \
 				expander/expander_fill.c \
 				expander/expander_len.c \
 				expander/expander.c \
 				expander/wildcard.c \
+				expander/wildcard_utils.c \
 				execution/exec_cmd.c \
 				execution/exec_heredoc.c \
 				execution/exec_main.c \

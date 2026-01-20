@@ -6,48 +6,11 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 13:52:20 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/17 18:24:45 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/20 19:01:00 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-/*
-** Restore \x01 back to * after wildcard expansion
-** This is needed because quoted * were converted to \x01 to protect them
-*/
-void	restore_wildcards(char *str)
-{
-	if (!str)
-		return ;
-	while (*str)
-	{
-		if (*str == '\x01')
-			*str = '*';
-		str++;
-	}
-}
-
-void	insert_wildcard_matches(t_list	*current, char **matches)
-{
-	t_list	*saved_next;
-	t_list	*new_node;
-	int		i;
-
-	saved_next = current->next;
-	free(current->content);
-	current->content = matches[0];
-	i = 1;
-	while (matches[i])
-	{
-		new_node = ft_lstnew(matches[i]);
-		current->next = new_node;
-		current = current->next;
-		i++;
-	}
-	current->next = saved_next;
-	free(matches);
-}
 
 int	match_pattern(char *pattern, char *str)
 {
@@ -69,58 +32,61 @@ int	match_pattern(char *pattern, char *str)
 	return (0);
 }
 
-char	**expand_wildcard(char *pattern)
+static int	count_matches(char *pattern)
 {
 	DIR				*dir;
 	struct dirent	*entry;
 	int				count;
-	int				i;
-	char			**result;
 
 	dir = opendir(".");
 	if (!dir)
-	{
-		perror("opendir");
-		return (NULL);
-	}
+		return (-1);
 	count = 0;
 	entry = readdir(dir);
 	while (entry != NULL)
 	{
-		if (pattern[0] != '.' && entry->d_name[0] == '.')
-		{
-			entry = readdir(dir);
-			continue ;
-		}
-		if (match_pattern(pattern, entry->d_name))
-			count++;
+		if (!(pattern[0] != '.' && entry->d_name[0] == '.'))
+			if (match_pattern(pattern, entry->d_name))
+				count++;
 		entry = readdir(dir);
 	}
 	closedir(dir);
+	return (count);
+}
+
+static char	**fill_matches(char *pattern, int count)
+{
+	DIR				*dir;
+	struct dirent	*entry;
+	char			**result;
+	int				i;
+
 	result = malloc(sizeof(char *) * (count + 1));
 	if (!result)
-		return (0);
+		return (NULL);
 	dir = opendir(".");
 	if (!dir)
-	{
-		free_tab(result);
-		perror("opendir");
-		return (NULL);
-	}
+		return (free(result), NULL);
 	i = 0;
 	entry = readdir(dir);
 	while (entry != NULL)
 	{
-		if (pattern[0] != '.' && entry->d_name[0] == '.')
-		{
-			entry = readdir(dir);
-			continue ;
-		}
-		if (match_pattern(pattern, entry->d_name))
-			result[i++] = ft_strdup(entry->d_name);
+		if (!(pattern[0] != '.' && entry->d_name[0] == '.'))
+			if (match_pattern(pattern, entry->d_name))
+				result[i++] = ft_strdup(entry->d_name);
 		entry = readdir(dir);
 	}
-	result[i] = 0;
+	result[i] = NULL;
 	closedir(dir);
 	return (result);
+}
+
+char	**expand_wildcard(char *pattern)
+{
+	int	count;
+
+	count = count_matches(pattern);
+	if (count == -1)
+		return (perror("opendir"), NULL);
+	return (fill_matches(pattern, count));
 }

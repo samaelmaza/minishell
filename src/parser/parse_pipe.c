@@ -6,24 +6,18 @@
 /*   By: sreffers <sreffers@student.42madrid.c>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 22:21:02 by sreffers          #+#    #+#             */
-/*   Updated: 2026/01/18 19:20:00 by sreffers         ###   ########.fr       */
+/*   Updated: 2026/01/20 19:00:00 by sreffers         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static t_ast	*parse_subshell_error(t_ast *node, t_minishell *shell)
-{
-	printf("Syntax error: missing closing parenthesis\n");
-	shell->exit_code = 2;
-	free_ast(node);
-	return (NULL);
-}
-
-static t_ast	*make_subshell_node(t_ast *node)
+static t_ast	*make_subshell_node(t_ast *node, t_minishell *shell)
 {
 	t_ast	*subshell;
 
+	if (!check_token(NULL, TOKEN_R_PARENT) && !node)
+		return (NULL);
 	subshell = new_ast_node(NODE_SUBSHELL);
 	if (!subshell)
 	{
@@ -31,6 +25,7 @@ static t_ast	*make_subshell_node(t_ast *node)
 		return (NULL);
 	}
 	subshell->left = node;
+	(void)shell;
 	return (subshell);
 }
 
@@ -43,9 +38,14 @@ static t_ast	*parse_subshell(t_token **tokens, t_minishell *shell)
 	if (!node)
 		return (NULL);
 	if (!check_token(*tokens, TOKEN_R_PARENT))
-		return (parse_subshell_error(node, shell));
+	{
+		printf("Syntax error: missing closing parenthesis\n");
+		shell->exit_code = 2;
+		free_ast(node);
+		return (NULL);
+	}
 	get_next_token(tokens);
-	return (make_subshell_node(node));
+	return (make_subshell_node(node, shell));
 }
 
 static t_ast	*parse_primary(t_token **tokens, t_minishell *shell)
@@ -71,41 +71,6 @@ t_ast	*parse_pipeline(t_token **tokens, t_minishell *shell)
 			return (free_ast(left), NULL);
 		node->left = left;
 		node->right = parse_pipeline(tokens, shell);
-		if (!node->right)
-			return (free_ast(node), NULL);
-		return (node);
-	}
-	return (left);
-}
-
-static t_ast	*create_logic_node(t_token **tokens)
-{
-	t_ast	*node;
-
-	if ((*tokens)->type == TOKEN_AND)
-		node = new_ast_node(NODE_AND);
-	else
-		node = new_ast_node(NODE_OR);
-	return (node);
-}
-
-t_ast	*parse_logic(t_token **tokens, t_minishell *shell)
-{
-	t_ast	*left;
-	t_ast	*node;
-
-	left = parse_pipeline(tokens, shell);
-	if (!left)
-		return (NULL);
-	if (*tokens && ((*tokens)->type == TOKEN_AND
-			|| (*tokens)->type == TOKEN_OR))
-	{
-		node = create_logic_node(tokens);
-		if (!node)
-			return (free_ast(left), NULL);
-		get_next_token(tokens);
-		node->left = left;
-		node->right = parse_logic(tokens, shell);
 		if (!node->right)
 			return (free_ast(node), NULL);
 		return (node);
