@@ -21,7 +21,7 @@ INCLUDES    =	-I$(INC_DIR) -I$(LIBFT_DIR)
 # ==============================================================================
 
 SRCS_FILES  =	main.c \
-				clean.c \
+				utils/clean.c \
 				env/env_utils.c \
 				lexer/lexer.c \
 				lexer/lexer_separator.c \
